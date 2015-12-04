@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update});
+var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update});
 
 var player;
 var platforms;
@@ -17,12 +17,13 @@ function create() {
     platforms = game.add.group();
     platforms.enableBody = true;
 
-    var ground = platforms.create(0, game.world.height - 35, 'land');
+    var ground = platforms.create(0, game.world.height - 20, 'land');
     ground.body.immovable = true;
 
-    player = game.add.sprite(game.world.width - 35, game.world.height - 70, 'pizza');
-    player.scale.setTo(1, 1);
-    player.enableBody = true;
+    var ceiling = platforms.create(0, 0, 'land');
+    ceiling.body.immovable = true;
+
+    player = game.add.sprite(10, game.world.height - 70, 'pizza');
     game.physics.arcade.enable(player);
 
     player.body.gravity.y = 300;
@@ -43,17 +44,21 @@ function update() {
 
     player.body.velocity.x = 0;
 
+
+
     if (cursors.left.isDown) {
         player.body.velocity.x = -350;
-        player.animations.play('left');
+        if(player.body.touching.down) player.animations.play('left');
+        else player.frame = 1;
     }
     else if (cursors.right.isDown) {
         player.body.velocity.x = 350;
-        player.animations.play('right');
+        if(player.body.touching.down) player.animations.play('right');
+        else player.frame = 7;
     }
     else{
         player.animations.stop();
-        player.frame = 4;
+        if(player.body.touching.down) player.frame = 4;
     }
 
     if (cursors.up.isDown && player.body.touching.down) {
