@@ -17,8 +17,9 @@ function create() {
     platforms = game.add.group();
     platforms.enableBody = true;
 
-    var ground = platforms.create(0, game.world.height - 35, 'land');
+    var ground = platforms.create(0, game.world.height - 20, 'land');
     ground.body.immovable = true;
+    //ground.scale.setTo()
 
     player = game.add.sprite(game.world.width - 35, game.world.height - 70, 'pizza');
     player.scale.setTo(1, 1);
@@ -45,15 +46,25 @@ function update() {
 
     if (cursors.left.isDown) {
         player.body.velocity.x = -350;
-        player.animations.play('left');
+        if(player.body.touching.down) {
+            player.animations.play('left');
+        } else {
+            player.frame = 1;
+        }
     }
     else if (cursors.right.isDown) {
         player.body.velocity.x = 350;
-        player.animations.play('right');
+        if(player.body.touching.down) {
+            player.animations.play('right');
+        } else {
+            player.frame = 7;
+        }
     }
     else{
         player.animations.stop();
-        player.frame = 4;
+        if(player.body.touching.down) {
+            player.frame = 4;
+        }
     }
 
     if (cursors.up.isDown && player.body.touching.down) {
