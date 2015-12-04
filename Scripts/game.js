@@ -18,21 +18,13 @@ function create() {
     platforms.enableBody = true;
 
     var ground = platforms.create(0, game.world.height - 20, 'land');
-    ground.body.immovable = true;
-    //ground.scale.setTo()
-
     var ceiling = platforms.create(0, 0, 'land');
-    ceiling.body.immovable = true;
-
     var leftWall = platforms.create(20, 0, 'land');
-    leftWall.rotation = 1.57079633;
-    leftWall.body.immovable = true;
-
     var rightWall = platforms.create(game.world.width, 0, 'land');
+    leftWall.rotation = 1.57079633;
     rightWall.rotation = 1.57079633;
-    rightWall.body.immovable = true;
 
-    platforms.setAll(immovable, true);
+    platforms.setAll('body.immovable', true);
 
     player = game.add.sprite(30, game.world.height - 70, 'pizza');
     game.physics.arcade.enable(player);
@@ -57,7 +49,7 @@ function update() {
 
     if (cursors.left.isDown) {
         player.body.velocity.x = -350;
-        if(player.body.touching.down) {
+        if (player.body.touching.down) {
             player.animations.play('left');
         } else {
             player.frame = 1;
@@ -65,30 +57,17 @@ function update() {
     }
     else if (cursors.right.isDown) {
         player.body.velocity.x = 350;
-        if(player.body.touching.down) {
+        if (player.body.touching.down) {
             player.animations.play('right');
         } else {
             player.frame = 7;
         }
     }
-    else{
+    else {
         player.animations.stop();
-        if(player.body.touching.down) {
+        if (player.body.touching.down) {
             player.frame = 4;
         }
-=======
-        if(player.body.touching.down) player.animations.play('left');
-        else player.frame = 1;
-    }
-    else if (cursors.right.isDown) {
-        player.body.velocity.x = 350;
-        if(player.body.touching.down) player.animations.play('right');
-        else player.frame = 7;
-    }
-    else{
-        player.animations.stop();
-        if(player.body.touching.down) player.frame = 4;
->>>>>>> a7fde5747787c808d7e39ab5efcbb8633a002d27
     }
 
     if (cursors.up.isDown && player.body.touching.down) {
@@ -104,5 +83,5 @@ function update() {
 
 
 //function collectItem (player, item) {
-    //  item.kill();
+//  item.kill();
 //}
