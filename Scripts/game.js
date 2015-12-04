@@ -23,15 +23,17 @@ function create() {
     var ceiling = platforms.create(0, 0, 'land');
     ceiling.body.immovable = true;
 
-    var leftWall = platforms.create(0, 0, 'land');
+    var leftWall = platforms.create(20, 0, 'land');
+    leftWall.rotation = 1.57079633;
     leftWall.body.immovable = true;
 
-    var rightWall = platforms.create(0, 0, 'land');
+    var rightWall = platforms.create(game.world.width, 0, 'land');
+    rightWall.rotation = 1.57079633;
     rightWall.body.immovable = true;
 
-    platforms.setAll(body.immovable, true)
+    platforms.setAll(immovable, true);
 
-    player = game.add.sprite(10, game.world.height - 70, 'pizza');
+    player = game.add.sprite(30, game.world.height - 70, 'pizza');
     game.physics.arcade.enable(player);
 
     player.body.gravity.y = 300;
