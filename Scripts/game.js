@@ -23,6 +23,14 @@ function create() {
     var ceiling = platforms.create(0, 0, 'land');
     ceiling.body.immovable = true;
 
+    var leftWall = platforms.create(0, 0, 'land');
+    leftWall.body.immovable = true;
+
+    var rightWall = platforms.create(0, 0, 'land');
+    rightWall.body.immovable = true;
+
+    platforms.setAll(body.immovable, true)
+
     player = game.add.sprite(10, game.world.height - 70, 'pizza');
     game.physics.arcade.enable(player);
 
