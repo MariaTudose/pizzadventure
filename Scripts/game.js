@@ -6,6 +6,7 @@ var platforms;
 function preload() {
 
     game.load.image('land', 'images/land.png');
+    game.load.image('wall', 'images/wall.png');
     game.load.spritesheet('pizza', 'images/pizza.png', 35, 30);
 
 }
@@ -19,11 +20,8 @@ function create() {
 
     var ground = platforms.create(0, game.world.height - 20, 'land');
     var ceiling = platforms.create(0, 0, 'land');
-    var leftWall = platforms.create(20, 0, 'land');
-    var rightWall = platforms.create(game.world.width, 0, 'land');
-    leftWall.rotation = 1.57079633;
-    rightWall.rotation = 1.57079633;
-
+    var leftWall = platforms.create(0, 0, 'wall');
+    var rightWall = platforms.create(game.world.width - 20, 0, 'wall');
     platforms.setAll('body.immovable', true);
 
     player = game.add.sprite(30, game.world.height - 70, 'pizza');
