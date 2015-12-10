@@ -7,7 +7,7 @@ var achimusic;
 var jump;
 var text;
 var box;
-var achievements = {"Go right": false, "Go left": false, "Jump": false};
+var achievements = {"Go right": false, "Go left": false, "Jump": false, "Press Down": false};
 
 function preload() {
 
@@ -88,6 +88,9 @@ function update() {
         else player.frame = 7;
 
         if (!achievements["Go Right"]) achievementUnlocked("Go Right", "Wow you just went right");
+    }
+    else if (cursors.down.isDown) {
+        if (!achievements["Press Down"]) achievementUnlocked("Press Down", "u dont need that button");
     }
     else {
         player.animations.stop();
