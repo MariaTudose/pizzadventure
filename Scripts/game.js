@@ -11,7 +11,10 @@ var achimusic;
 var jump;
 var text;
 var box;
-var achievements = {"Go right": false, "Go left": false, "Jump": false};
+var achievements = ["Righteous", "There is no hope", "Don't die", "Leftist", "Malaria",
+                    "Too damn high", "Danger Zone", "Hallelujah", "Supernova", "The Terminator", "Intouchable"];
+var unlocked = {};
+var achilist = {};
 
 function preload() {
 
@@ -69,7 +72,19 @@ function create() {
 
 
     //menu
-    menu = game.add.sprite(800 + 5, 5, 'menu');
+    menu = game.add.sprite(805, 5, 'menu');
+    game.add.bitmapText(820, 15, 'font', 'Achievements', 20);
+
+    //achievement info
+    achievements.forEach(function (val) {
+        unlocked[val] = false
+    });
+    var i = 1;
+    achievements.forEach(function (achi) {
+        achilist[achi] = game.add.bitmapText(820, 20 + (i * 20), 'font', achi + '\n\n\n', 16);
+        achilist[achi].alpha = 0.5;
+        i += 1;
+    });
 
     //menu buttons and text
     game.add.button(width + 5, height - 25, 'block', mute, this, 2, 1, 0).scale.setTo(3, 1);
@@ -98,7 +113,7 @@ function update() {
         player.body.velocity.x = -350;
         if (player.body.touching.down) player.animations.play('left');
         else player.frame = 1;
-        checkAchievement("Go Left");
+        checkAchievement("Leftist");
 
     }
     else if (cursors.right.isDown) {
@@ -107,7 +122,7 @@ function update() {
         if (player.body.touching.down) player.animations.play('right');
         else player.frame = 7;
 
-        checkAchievement("Go Right");
+        checkAchievement("Righteous");
     }
     else {
         player.animations.stop();
@@ -117,7 +132,7 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.body.velocity.y = -400;
         jump.play();
-        checkAchievement("Jump");
+        checkAchievement("Too damn high");
     }
 
 }
@@ -158,12 +173,13 @@ function info() {
 }
 
 function checkAchievement(achievement) {
-    if (!achievements[achievement]) achievementUnlocked(achievement);
+    if (!unlocked[achievement]) achievementUnlocked(achievement);
 }
 
 function achievementUnlocked(achievement) {
     achimusic.play();
-    achievements[achievement] = true;
+    unlocked[achievement] = true;
+    achilist[achievement].alpha = 1;
     box = game.add.sprite(300, height - 55, 'achi');
     text = game.add.bitmapText(310, height - 45, 'font', 'Achievement unlocked !\n' + achievement, 16);
 
