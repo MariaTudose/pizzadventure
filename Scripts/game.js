@@ -1,4 +1,8 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update});
+var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update});
+
+
+var width = 800;
+var height = 600;
 
 var player;
 var platforms;
@@ -18,6 +22,7 @@ function preload() {
     game.load.image('wall', 'images/wall.png');
     game.load.image('block', 'images/block.png');
     game.load.image('achi', 'images/achi.png');
+    game.load.image('menu', 'images/menu.png');
     game.load.spritesheet('pizza', 'images/pizza.png', 35, 30);
     game.load.bitmapFont('font', 'nokia16.png', 'nokia16.xml');
 
@@ -38,20 +43,21 @@ function create() {
     platforms.enableBody = true;
 
     //borders
-    platforms.create(0, game.world.height - 20, 'land');
+    platforms.create(0, height - 20, 'land');
     platforms.create(0, 0, 'land');
     platforms.create(0, 0, 'wall');
-    platforms.create(game.world.width - 20, 0, 'wall');
+    platforms.create(width - 20, 0, 'wall');
 
     //platforms
     platforms.create(370, 290, 'block').scale.setTo(5, 1);
-    platforms.create(game.world.width - 250, 350, 'block').scale.setTo(5, 1);
+    platforms.create(width - 250, 350, 'block').scale.setTo(5, 1);
     platforms.create(0, 450, 'block').scale.setTo(10, 1);
-    platforms.create(game.world.width - 100, 400, 'block').scale.setTo(5, 1);
+    platforms.create(width - 100, 400, 'block').scale.setTo(5, 1);
     platforms.create(250, 500, 'block').scale.setTo(5, 1);
 
     platforms.setAll('body.immovable', true);
 
+    //player
     player = game.add.sprite(380, 200, 'pizza');
     game.physics.arcade.enable(player);
 
@@ -60,6 +66,20 @@ function create() {
 
     player.animations.add('left', [0, 1, 2, 3], 10, true);
     player.animations.add('right', [5, 6, 7, 8], 10, true);
+
+
+    //menu
+    menu = game.add.sprite(800 + 5, 5, 'menu');
+
+    //menu buttons and text
+    game.add.button(width + 5, height - 25, 'block', mute, this, 2, 1, 0).scale.setTo(3, 1);
+    game.add.button(width + 70, height - 25, 'block', pause, this, 2, 1, 0).scale.setTo(3, 1);
+    game.add.button(width + 135, height - 25, 'block', info, this, 2, 1, 0).scale.setTo(3, 1);
+
+    game.add.bitmapText(width + 10, height - 24, 'font', 'Mute', 16);
+    game.add.bitmapText(width + 75, height - 24, 'font', 'Pause', 16);
+    game.add.bitmapText(width + 140, height - 24, 'font', 'Info', 16);
+
 
     cursors = game.input.keyboard.createCursorKeys();
 
@@ -78,8 +98,8 @@ function update() {
         player.body.velocity.x = -350;
         if (player.body.touching.down) player.animations.play('left');
         else player.frame = 1;
+        checkAchievement("Go Left");
 
-        if (!achievements["Go Left"]) achievementUnlocked("Go Left", "neega");
     }
     else if (cursors.right.isDown) {
 
@@ -87,7 +107,7 @@ function update() {
         if (player.body.touching.down) player.animations.play('right');
         else player.frame = 7;
 
-        if (!achievements["Go Right"]) achievementUnlocked("Go Right", "Wow you just went right");
+        checkAchievement("Go Right");
     }
     else {
         player.animations.stop();
@@ -97,16 +117,55 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.body.velocity.y = -400;
         jump.play();
-        if (!achievements["Jump"]) achievementUnlocked("Jump", "You jump like a faggot");
+        checkAchievement("Jump");
     }
 
 }
 
-function achievementUnlocked(achievement, text) {
+function mute() {
+    if (music.paused) music.resume();
+    else music.pause();
+}
+
+function pause() {
+
+    menu = game.add.sprite(width / 2, height / 2, 'block');
+    menu.scale.setTo(12, 5);
+    menu.anchor.setTo(0.5, 0.5);
+    game.paused = true;
+    text = game.add.bitmapText(width / 2, height / 2, 'font', '                Paused\n\n\nClick anywhere to continue', 16);
+    text.anchor.setTo(0.5, 0.5);
+    game.input.onDown.add(function () {
+        game.paused = false;
+        menu.destroy();
+        text.destroy();
+    }, self);
+}
+
+function info() {
+    menu = game.add.sprite(width / 2, height / 2, 'block');
+    menu.scale.setTo(20, 5);
+    menu.anchor.setTo(0.5, 0.5);
+    game.paused = true;
+    text = game.add.bitmapText(width / 2, height / 2, 'font', 'Collect as many achievements as you can!!!!\n\n\n' +
+        'By Maria Tudose & Linda Levänen', 16);
+    text.anchor.setTo(0.5, 0.5);
+    game.input.onDown.add(function () {
+        game.paused = false;
+        menu.destroy();
+        text.destroy();
+    }, self);
+}
+
+function checkAchievement(achievement) {
+    if (!achievements[achievement]) achievementUnlocked(achievement);
+}
+
+function achievementUnlocked(achievement) {
     achimusic.play();
     achievements[achievement] = true;
-    box = game.add.sprite(300, game.world.height - 55, 'achi');
-    text = game.add.bitmapText(310, game.world.height - 45, 'font', 'Achievement unlocked !\n' + text, 16);
+    box = game.add.sprite(300, height - 55, 'achi');
+    text = game.add.bitmapText(310, height - 45, 'font', 'Achievement unlocked !\n' + achievement, 16);
 
     s = this.game.add.tween(text).to({alpha: 0}, 4000, null);
     t = this.game.add.tween(box).to({alpha: 0}, 4000, null);
