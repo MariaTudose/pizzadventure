@@ -44,11 +44,13 @@ function create() {
     platforms.create(game.world.width - 20, 0, 'wall');
 
     //platforms
-    platforms.create(370, 290, 'block').scale.setTo(5, 1);
-    platforms.create(game.world.width - 250, 350, 'block').scale.setTo(5, 1);
+    platforms.create(370, 370, 'block').scale.setTo(5, 1);
+    platforms.create(game.world.width - 250, 300, 'block').scale.setTo(5, 1);
     platforms.create(0, 450, 'block').scale.setTo(10, 1);
     platforms.create(game.world.width - 100, 400, 'block').scale.setTo(5, 1);
     platforms.create(250, 500, 'block').scale.setTo(5, 1);
+    platforms.create(300, 230, 'block').scale.setTo(7, 1);
+    platforms.create(0, 150, 'block').scale.setTo(9, 1);
 
     platforms.setAll('body.immovable', true);
 
