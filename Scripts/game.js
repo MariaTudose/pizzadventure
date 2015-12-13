@@ -90,7 +90,7 @@ function update() {
         if (!achievements["Go Right"]) achievementUnlocked("Go Right", "Wow you just went right");
     }
     else if (cursors.down.isDown) {
-        if (!achievements["Press Down"]) achievementUnlocked("Press Down", "u dont need that button");
+        if (!achievements["Press Down"]) achievementUnlocked("Press Down", "Dont press down");
     }
     else {
         player.animations.stop();
@@ -98,7 +98,7 @@ function update() {
     }
 
     if (cursors.up.isDown && player.body.touching.down) {
-        player.body.velocity.y = -400;
+        player.body.velocity.y = -420;
         jump.play();
         if (!achievements["Jump"]) achievementUnlocked("Jump", "You jump like a faggot");
     }
