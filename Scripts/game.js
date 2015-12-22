@@ -21,8 +21,6 @@ function preload() {
     game.load.audio('music', ['audio/music.ogg']);
     game.load.audio('achimusic', ['audio/achi.wav']);
     game.load.audio('jump', ['audio/jump.wav']);
-    game.load.image('land', 'images/land.png');
-    game.load.image('wall', 'images/wall.png');
     game.load.image('block', 'images/block.png');
     game.load.image('achi', 'images/achi.png');
     game.load.image('menu', 'images/menu.png');
@@ -34,6 +32,7 @@ function preload() {
 function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.stage.backgroundColor = '#cccccc';
 
     //sounds
     music = game.add.audio('music');
@@ -46,17 +45,23 @@ function create() {
     platforms.enableBody = true;
 
     //borders
-    platforms.create(0, height - 20, 'land');
-    platforms.create(0, 0, 'land');
-    platforms.create(0, 0, 'wall');
-    platforms.create(width - 20, 0, 'wall');
+    for (i = 0; i < 40; i++) {
+        platforms.create((i * 20), height - 20, 'block');
+        platforms.create((i * 20), 0, 'block');
+        platforms.create(0, (i * 20), 'block');
+        platforms.create(width - 20, (i * 20), 'block');
+    }
 
     //platforms
-    platforms.create(370, 290, 'block').scale.setTo(5, 1);
-    platforms.create(width - 250, 350, 'block').scale.setTo(5, 1);
-    platforms.create(0, 450, 'block').scale.setTo(10, 1);
-    platforms.create(width - 100, 400, 'block').scale.setTo(5, 1);
-    platforms.create(250, 500, 'block').scale.setTo(5, 1);
+    for (i = 0; i < 5; i++) {
+        platforms.create(370 + (i * 20), 290, 'block');
+        platforms.create(width - 250 + (i * 20), 350, 'block');
+        platforms.create(width - 100 + (i * 20), 400, 'block');
+        platforms.create(250 + (i * 20), 500, 'block');
+    }
+
+    for (i = 0; i < 10; i++) platforms.create((i * 20), 440, 'block');
+
 
     platforms.setAll('body.immovable', true);
 
@@ -188,3 +193,4 @@ function achievementUnlocked(achievement) {
     s.start();
     t.start();
 }
+
