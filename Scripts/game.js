@@ -12,7 +12,7 @@ var jump;
 var text;
 var box;
 var achievements = ["Righteous", "There is no hope", "Don't die", "Leftist", "Malaria",
-                    "Too damn high", "Danger Zone", "Hallelujah", "Supernova", "The Terminator", "Intouchable"];
+    "Too damn high", "Danger Zone", "Hallelujah", "Supernova", "The Terminator", "Intouchable"];
 var unlocked = {};
 var achilist = {};
 
@@ -20,10 +20,15 @@ function preload() {
 
     game.load.audio('music', ['audio/music.ogg']);
     game.load.audio('achimusic', ['audio/achi.wav']);
-    game.load.audio('jump', ['audio/jump.wav']);
+    game.load.audio('jump', ['audio/jump.ogg']);
+    game.load.audio('booster', ['audio/booster.ogg']);
     game.load.image('block', 'images/block.png');
     game.load.image('achi', 'images/achi.png');
     game.load.image('menu', 'images/menu.png');
+    game.load.image('item', 'images/item.png');
+    game.load.image('button', 'images/button.png');
+    game.load.image('boost', 'images/boost.png');
+    game.load.image('spikes', 'images/spikes.png');
     game.load.spritesheet('pizza', 'images/pizza.png', 35, 30);
     game.load.bitmapFont('font', 'nokia16.png', 'nokia16.xml');
 
@@ -37,6 +42,7 @@ function create() {
     //sounds
     music = game.add.audio('music');
     jump = game.add.audio('jump');
+    booster = game.add.audio('booster');
     achimusic = game.add.audio('achimusic');
     music.play();
 
@@ -45,25 +51,32 @@ function create() {
     platforms.enableBody = true;
 
     //borders
-    for (i = 0; i < 40; i++) {
-        platforms.create((i * 20), height - 20, 'block');
-        platforms.create((i * 20), 0, 'block');
-        platforms.create(0, (i * 20), 'block');
-        platforms.create(width - 20, (i * 20), 'block');
-    }
+    platforms.add(game.add.tileSprite(0, 0, 800, 20, 'block'));
+    platforms.add(game.add.tileSprite(0, height - 20, 800, 20, 'block'));
+    platforms.add(game.add.tileSprite(0, 0, 20, 600, 'block'));
+    platforms.add(game.add.tileSprite(width - 20, 0, 20, 600, 'block'));
+
+    //items
+    items = game.add.group();
+    items.enableBody = true;
+
+    boosters = game.add.group();
+    boosters.enableBody = true;
 
     //platforms
-    for (i = 0; i < 5; i++) {
-        platforms.create(370 + (i * 20), 290, 'block');
-        platforms.create(width - 250 + (i * 20), 350, 'block');
-        platforms.create(width - 100 + (i * 20), 400, 'block');
-        platforms.create(250 + (i * 20), 500, 'block');
+    function createPlat(x, y, width, height) {
+        platforms.add(game.add.tileSprite(x, y, width, height, 'block'));
+        if (Math.random() > 0.5) boosters.create(x, y - 10, 'boost');
+        if (Math.random() > 0.6) items.create(x, y - 30, 'item');
     }
 
-    for (i = 0; i < 10; i++) platforms.create((i * 20), 440, 'block');
-
-
+    createPlat(370, 290, 100, 20);
+    createPlat(width - 250, 350, 100, 20);
+    createPlat(width - 120, 400, 100, 20);
+    createPlat(250, 500, 100, 20);
+    createPlat(20, 440, 200, 20);
     platforms.setAll('body.immovable', true);
+
 
     //player
     player = game.add.sprite(380, 200, 'pizza');
@@ -92,9 +105,9 @@ function create() {
     });
 
     //menu buttons and text
-    game.add.button(width + 5, height - 25, 'block', mute, this, 2, 1, 0).scale.setTo(3, 1);
-    game.add.button(width + 70, height - 25, 'block', pause, this, 2, 1, 0).scale.setTo(3, 1);
-    game.add.button(width + 135, height - 25, 'block', info, this, 2, 1, 0).scale.setTo(3, 1);
+    game.add.button(width + 5, height - 25, 'button', mute, this, 2, 1, 0);
+    game.add.button(width + 70, height - 25, 'button', pause, this, 2, 1, 0);
+    game.add.button(width + 135, height - 25, 'button', info, this, 2, 1, 0);
 
     game.add.bitmapText(width + 10, height - 24, 'font', 'Mute', 16);
     game.add.bitmapText(width + 75, height - 24, 'font', 'Pause', 16);
@@ -109,6 +122,9 @@ function update() {
 
 
     game.physics.arcade.collide(player, platforms);
+    game.physics.arcade.collide(items, platforms);
+    game.physics.arcade.overlap(player, items, collectItem, null, this);
+    game.physics.arcade.overlap(player, boosters, boostPlayer, null, this);
 
 
     player.body.velocity.x = 0;
@@ -192,5 +208,15 @@ function achievementUnlocked(achievement) {
     t = this.game.add.tween(box).to({alpha: 0}, 4000, null);
     s.start();
     t.start();
+}
+
+
+function collectItem(player, item) {
+    item.kill();
+}
+
+function boostPlayer(player, item) {
+    booster.play();
+    player.body.velocity.y = -600;
 }
 
