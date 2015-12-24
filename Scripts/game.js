@@ -1,8 +1,8 @@
-var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update});
+var game = new Phaser.Game(1000, 800, Phaser.AUTO, '', {preload: preload, create: create, update: update});
 
 
 var width = 800;
-var height = 600;
+var height = 800;
 
 var player;
 var platforms;
@@ -128,8 +128,8 @@ function create() {
 
 
     //menu
-    menu = game.add.sprite(805, 5, 'menu');
-    game.add.bitmapText(820, 15, 'font', 'Achievements', 20);
+    menu = game.add.sprite(width + 5, 5, 'menu');
+    game.add.bitmapText(width + 20, 15, 'font', 'Achievements', 20);
 
     //achievement info
     achievements.forEach(function (val) {
@@ -137,7 +137,7 @@ function create() {
     });
     var i = 1;
     achievements.forEach(function (achi) {
-        achilist[achi] = game.add.bitmapText(820, 20 + (i * 20), 'font', achi + '\n\n\n', 16);
+        achilist[achi] = game.add.bitmapText(width + 20, 20 + (i * 20), 'font', achi + '\n\n\n', 16);
         achilist[achi].alpha = 0.5;
         i += 1;
     });
