@@ -11,8 +11,8 @@ var achimusic;
 var jump;
 var text;
 var box;
-var achievements = ["Righteous", "There is no hope", "Don't die", "Leftist", "Malaria",
-    "Too damn high", "Danger Zone", "Hallelujah", "Supernova", "The Terminator", "Intouchable"];
+var achievements = ["Righteous", "Ball Lover", "There is no hope", "Not Entertained", "Don't die", "Leftist", "U ded", "Malaria",
+    "Too damn high", "Danger Zone", "Hallelujah","Informed", "Pausing is for sissies", "Supernova", "Bojoing", "The Terminator", "Intouchable"];
 var unlocked = {};
 var achilist = {};
 
@@ -22,15 +22,17 @@ function preload() {
     game.load.audio('achimusic', ['audio/achi.wav']);
     game.load.audio('jump', ['audio/jump.ogg']);
     game.load.audio('booster', ['audio/booster.ogg']);
+    game.load.audio('death', ['audio/death.wav']);
     game.load.image('block', 'images/block.png');
     game.load.image('achi', 'images/achi.png');
     game.load.image('menu', 'images/menu.png');
-    game.load.image('item', 'images/item.png');
+    game.load.image('ball', 'images/ball.png');
     game.load.image('button', 'images/button.png');
     game.load.image('boost', 'images/boost.png');
-    game.load.image('spikes', 'images/spikes.png');
+    game.load.image('spike', 'images/spikes.png');
     game.load.spritesheet('pizza', 'images/pizza.png', 35, 30);
     game.load.bitmapFont('font', 'nokia16.png', 'nokia16.xml');
+    game.load.text('map', 'map.txt');
 
 }
 
@@ -44,49 +46,85 @@ function create() {
     jump = game.add.audio('jump');
     booster = game.add.audio('booster');
     achimusic = game.add.audio('achimusic');
-    music.play();
+    death = game.add.audio('death');
+    //music.play();
 
 
     platforms = game.add.group();
     platforms.enableBody = true;
 
-    //borders
-    platforms.add(game.add.tileSprite(0, 0, 800, 20, 'block'));
-    platforms.add(game.add.tileSprite(0, height - 20, 800, 20, 'block'));
-    platforms.add(game.add.tileSprite(0, 0, 20, 600, 'block'));
-    platforms.add(game.add.tileSprite(width - 20, 0, 20, 600, 'block'));
+    //balls
+    balls = game.add.group();
+    balls.enableBody = true;
 
-    //items
-    items = game.add.group();
-    items.enableBody = true;
-
+    //boosters
     boosters = game.add.group();
     boosters.enableBody = true;
 
-    //platforms
-    function createPlat(x, y, width, height) {
-        platforms.add(game.add.tileSprite(x, y, width, height, 'block'));
-        if (Math.random() > 0.5) boosters.create(x, y - 10, 'boost');
-        if (Math.random() > 0.6) items.create(x, y - 30, 'item');
+    //spikes
+    spikes = game.add.group();
+    spikes.enableBody = true;
+
+    //parse through game objects
+    var map = game.cache.getText('map').split('\n');;
+
+    i = 0;
+    while (map[i] != "END") {
+        if (map[i] == 'PLATFORMS') {
+            amount = map[++i];
+            for (var x = 1; x <= amount; x++) createPlat.apply(this, parseLine(map[i + x]));
+        } else if (map[i] == 'PLAYER') {
+            createPlayer.apply(this, parseLine(map[++i]));
+        } else if (map[i] == 'BOOSTERS') {
+            amount = map[++i];
+            for (var x = 1; x <= amount; x++) createBoost.apply(this, parseLine(map[i + x]));
+        } else if (map[i] == 'SPIKES') {
+            amount = map[++i];
+            for (var x = 1; x <= amount; x++) createSpike.apply(this, parseLine(map[i + x]));
+        } else if (map[i] == 'BALLS') {
+            amount = map[++i];
+            for (var x = 1; x <= amount; x++) createBall.apply(this, parseLine(map[i + x]));
+        }
+        i++;
     }
 
-    createPlat(370, 290, 100, 20);
-    createPlat(width - 250, 350, 100, 20);
-    createPlat(width - 120, 400, 100, 20);
-    createPlat(250, 500, 100, 20);
-    createPlat(20, 440, 200, 20);
+    function parseLine(line) {
+        newline = line.split(',').map(function (str) {
+            return parseInt(str) * 20;
+        });
+        return newline
+    }
+
+
+    function createPlat(x, y, width, height) {
+        platforms.add(game.add.tileSprite(x, y, width, height, 'block'));
+    }
+
+    function createBoost(x, y) {
+        boosters.create(x, y - 10, 'boost');
+    }
+
+    function createSpike(x, y, width, height) {
+        spikes.create(x, y, 'spike');
+    }
+
+    function createBall(x, y) {
+        balls.create(x, y - 30, 'ball');
+    }
+
+    function createPlayer(x, y) {
+        player = game.add.sprite(x, y, 'pizza');
+        game.physics.arcade.enable(player);
+
+        player.body.gravity.y = 1000;
+        player.body.collideWorldBounds = true;
+
+        player.animations.add('left', [0, 1, 2, 3], 10, true);
+        player.animations.add('right', [5, 6, 7, 8], 10, true);
+
+    }
+
     platforms.setAll('body.immovable', true);
-
-
-    //player
-    player = game.add.sprite(380, 200, 'pizza');
-    game.physics.arcade.enable(player);
-
-    player.body.gravity.y = 1000;
-    player.body.collideWorldBounds = true;
-
-    player.animations.add('left', [0, 1, 2, 3], 10, true);
-    player.animations.add('right', [5, 6, 7, 8], 10, true);
 
 
     //menu
@@ -122,9 +160,10 @@ function update() {
 
 
     game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.collide(items, platforms);
-    game.physics.arcade.overlap(player, items, collectItem, null, this);
+    game.physics.arcade.collide(balls, platforms);
+    game.physics.arcade.overlap(player, balls, collectBall, null, this);
     game.physics.arcade.overlap(player, boosters, boostPlayer, null, this);
+    game.physics.arcade.overlap(player, spikes, killPlayer, null, this);
 
 
     player.body.velocity.x = 0;
@@ -159,14 +198,15 @@ function update() {
 }
 
 function mute() {
+    checkAchievement("Not Entertained");
     if (music.paused) music.resume();
     else music.pause();
 }
 
 function pause() {
-
-    menu = game.add.sprite(width / 2, height / 2, 'block');
-    menu.scale.setTo(12, 5);
+    checkAchievement("Pausing is for sissies");
+    menu = game.add.sprite(width / 2, height / 2, 'button');
+    menu.scale.setTo(5, 5);
     menu.anchor.setTo(0.5, 0.5);
     game.paused = true;
     text = game.add.bitmapText(width / 2, height / 2, 'font', '                Paused\n\n\nClick anywhere to continue', 16);
@@ -179,8 +219,9 @@ function pause() {
 }
 
 function info() {
-    menu = game.add.sprite(width / 2, height / 2, 'block');
-    menu.scale.setTo(20, 5);
+    checkAchievement("Informed");
+    menu = game.add.sprite(width / 2, height / 2, 'button');
+    menu.scale.setTo(8, 5);
     menu.anchor.setTo(0.5, 0.5);
     game.paused = true;
     text = game.add.bitmapText(width / 2, height / 2, 'font', 'Collect as many achievements as you can!!!!\n\n\n' +
@@ -211,12 +252,20 @@ function achievementUnlocked(achievement) {
 }
 
 
-function collectItem(player, item) {
-    item.kill();
+function collectBall(player, ball) {
+    checkAchievement("Ball Lover");
+    ball.kill();
 }
 
-function boostPlayer(player, item) {
+function boostPlayer(player) {
+    checkAchievement("Bojoing");
     booster.play();
     player.body.velocity.y = -600;
 }
 
+function killPlayer(player) {
+    checkAchievement("U ded");
+    death.play();
+    player.kill();
+    player.reset(380, 160);
+}
