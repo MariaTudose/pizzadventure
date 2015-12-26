@@ -111,12 +111,16 @@ function create() {
         boosters.create(x, y - 10, 'boost');
     }
 
-    function createSpike(x, y, width, height) {
-        spikes.create(x, y, 'spike');
+    function createSpike(x, y, u) {
+        spike = game.add.sprite(x, y, 'spike');
+        game.physics.arcade.enable(spike);
+        spike.body.setSize(8,8);
+        spikes.add(spike);
+        if(typeof u !== "undefined") spike.scale.y *= -1;
     }
 
     function createBall(x, y) {
-        balls.create(x, y - 30, 'ball');
+        balls.create(x, y, 'ball');
     }
 
     function createPlayer(x, y) {
