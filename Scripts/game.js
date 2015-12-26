@@ -131,7 +131,6 @@ function create() {
 
 
     //moving platforms
-<<<<<<< HEAD
     movPlatforms = game.add.group();
     movPlatforms.enableBody = true;
 
@@ -139,15 +138,6 @@ function create() {
     movPlat2 = game.add.sprite(10 * 20, 3 * 20, 'mblock');
     platforms.add(movPlat1);
     platforms.add(movPlat2);
-=======
-    movPlatforms = game.add.group();
-    movPlatforms.enableBody = true;
-
-    movPlat1 = game.add.sprite(5 * 20, 23 * 20, 'mblock');
-    movPlat2 = game.add.sprite(10 * 20, 3 * 20, 'mblock');
-    platforms.add(movPlat1);
-    platforms.add(movPlat2);
->>>>>>> 1081e208ef23dbcb1893b63355a492c97d3570d4
 
     //menu
     menu = game.add.sprite(width + 5, 5, 'menu');
