@@ -15,6 +15,7 @@ var achievements = ["Righteous", "Ball Lover", "There is no hope", "Not Entertai
     "Too damn high", "Danger Zone", "Hallelujah","Informed", "Pausing is for sissies", "Supernova", "Bojoing", "The Terminator", "Intouchable"];
 var unlocked = {};
 var achilist = {};
+var playerCoords;
 
 function preload() {
 
@@ -114,6 +115,7 @@ function create() {
     }
 
     function createPlayer(x, y) {
+        playerCoords = [x,y]
         player = game.add.sprite(x, y, 'pizza');
         game.physics.arcade.enable(player);
 
@@ -129,6 +131,7 @@ function create() {
 
 
     //moving platforms
+<<<<<<< HEAD
     movPlatforms = game.add.group();
     movPlatforms.enableBody = true;
 
@@ -136,10 +139,19 @@ function create() {
     movPlat2 = game.add.sprite(10 * 20, 3 * 20, 'mblock');
     platforms.add(movPlat1);
     platforms.add(movPlat2);
+=======
+    movPlatforms = game.add.group();
+    movPlatforms.enableBody = true;
+
+    movPlat1 = game.add.sprite(5 * 20, 23 * 20, 'mblock');
+    movPlat2 = game.add.sprite(10 * 20, 3 * 20, 'mblock');
+    platforms.add(movPlat1);
+    platforms.add(movPlat2);
+>>>>>>> 1081e208ef23dbcb1893b63355a492c97d3570d4
 
     //menu
-    menu = game.add.sprite(805, 5, 'menu');
-    game.add.bitmapText(820, 15, 'font', 'Achievements', 20);
+    menu = game.add.sprite(width + 5, 5, 'menu');
+    game.add.bitmapText(width + 20, 15, 'font', 'Achievements', 20);
 
     //achievement info
     achievements.forEach(function (val) {
@@ -147,7 +159,7 @@ function create() {
     });
     var i = 1;
     achievements.forEach(function (achi) {
-        achilist[achi] = game.add.bitmapText(820, 20 + (i * 20), 'font', achi + '\n\n\n', 16);
+        achilist[achi] = game.add.bitmapText(width + 20, 20 + (i * 20), 'font', achi + '\n\n\n', 16);
         achilist[achi].alpha = 0.5;
         i += 1;
     });
@@ -175,6 +187,18 @@ function update() {
     game.physics.arcade.overlap(player, boosters, boostPlayer, null, this);
     game.physics.arcade.overlap(player, spikes, killPlayer, null, this);
 
+    //moving platforms
+    if(movPlat1.body.y <= (23 * 20)) {
+    movPlat1.body.velocity.y = 50;
+    } else if (movPlat1.body.y >= (31 * 20)) {
+    movPlat1.body.velocity.y = -50;
+    }
+
+    if(movPlat2.body.x <= (10 * 20)) {
+    movPlat2.body.velocity.x = 50;
+    } else if (movPlat2.body.x >= (27 * 20)) {
+    movPlat2.body.velocity.x = -50;
+    }
 
     //moving platforms
     if(movPlat1.body.y <= (23 * 20)) {
@@ -289,5 +313,5 @@ function killPlayer(player) {
     checkAchievement("U ded");
     death.play();
     player.kill();
-    player.reset(380, 160);
+    player.reset(playerCoords[0], playerCoords[1]);
 }
