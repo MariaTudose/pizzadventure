@@ -127,9 +127,6 @@ function create() {
 
     }
 
-    platforms.setAll('body.immovable', true);
-
-
     //moving platforms
     movPlatforms = game.add.group();
     movPlatforms.enableBody = true;
@@ -138,6 +135,8 @@ function create() {
     movPlat2 = game.add.sprite(10 * 20, 3 * 20, 'mblock');
     platforms.add(movPlat1);
     platforms.add(movPlat2);
+
+    platforms.setAll('body.immovable', true);
 
     //menu
     menu = game.add.sprite(width + 5, 5, 'menu');
@@ -190,18 +189,6 @@ function update() {
     movPlat2.body.velocity.x = -50;
     }
 
-    //moving platforms
-    if(movPlat1.body.y <= (23 * 20)) {
-        movPlat1.body.velocity.y = 50;
-    } else if (movPlat1.body.y >= (31 * 20)) {
-        movPlat1.body.velocity.y = -50;
-    }
-
-    if(movPlat2.body.x <= (10 * 20)) {
-        movPlat2.body.velocity.x = 50;
-    } else if (movPlat2.body.x >= (27 * 20)) {
-        movPlat2.body.velocity.x = -50;
-    }
 
     player.body.velocity.x = 0;
 
