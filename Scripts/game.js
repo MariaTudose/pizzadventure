@@ -12,7 +12,7 @@ var jump;
 var text;
 var box;
 var achievements = ["Righteous", "Ball Lover", "There is no hope", "Not Entertained", "Don't die", "Leftist", "U ded", "Malaria",
-    "Too damn high", "Danger Zone", "Hallelujah","Informed", "Pausing is for sissies", "Supernova", "Bojoing", "The Terminator", "Intouchable"];
+    "Too damn high", "Danger Zone", "Hallelujah", "Informed", "Pausing is for sissies", "Supernova", "Bojoing", "The Terminator", "Intouchable"];
 var unlocked = {};
 var achilist = {};
 var playerCoords;
@@ -29,10 +29,11 @@ function preload() {
     game.load.image('achi', 'images/achi.png');
     game.load.image('menu', 'images/menu.png');
     game.load.image('ball', 'images/ball.png');
-    game.load.image('button', 'images/button.png');
+    game.load.image('menubutton', 'images/menubutton.png');
     game.load.image('boost', 'images/boost.png');
     game.load.image('spike', 'images/spikes.png');
     game.load.spritesheet('pizza', 'images/pizza.png', 35, 30);
+    game.load.spritesheet('button', 'images/button.png', 20, 20);
     game.load.bitmapFont('font', 'nokia16.png', 'nokia16.xml');
     game.load.text('map', 'map.txt');
 
@@ -68,8 +69,12 @@ function create() {
     spikes = game.add.group();
     spikes.enableBody = true;
 
+    //buttons
+    buttons = game.add.group();
+    buttons.enableBody = true;
+
     //parse through game objects
-    var map = game.cache.getText('map').split('\n');;
+    var map = game.cache.getText('map').split('\n');
 
     i = 0;
     while (map[i] != "END") {
@@ -115,7 +120,7 @@ function create() {
     }
 
     function createPlayer(x, y) {
-        playerCoords = [x,y]
+        playerCoords = [x, y];
         player = game.add.sprite(x, y, 'pizza');
         game.physics.arcade.enable(player);
 
@@ -124,8 +129,9 @@ function create() {
 
         player.animations.add('left', [0, 1, 2, 3], 10, true);
         player.animations.add('right', [5, 6, 7, 8], 10, true);
-
     }
+
+    buttons.create(38 * 20, 38 * 20, 'button');
 
     //moving platforms
     movPlatforms = game.add.group();
@@ -154,9 +160,9 @@ function create() {
     });
 
     //menu buttons and text
-    game.add.button(width + 5, height - 25, 'button', mute, this, 2, 1, 0);
-    game.add.button(width + 70, height - 25, 'button', pause, this, 2, 1, 0);
-    game.add.button(width + 135, height - 25, 'button', info, this, 2, 1, 0);
+    game.add.button(width + 5, height - 25, 'menubutton', mute, this, 2, 1, 0);
+    game.add.button(width + 70, height - 25, 'menubutton', pause, this, 2, 1, 0);
+    game.add.button(width + 135, height - 25, 'menubutton', info, this, 2, 1, 0);
 
     game.add.bitmapText(width + 10, height - 24, 'font', 'Mute', 16);
     game.add.bitmapText(width + 75, height - 24, 'font', 'Pause', 16);
@@ -175,18 +181,19 @@ function update() {
     game.physics.arcade.overlap(player, balls, collectBall, null, this);
     game.physics.arcade.overlap(player, boosters, boostPlayer, null, this);
     game.physics.arcade.overlap(player, spikes, killPlayer, null, this);
+    game.physics.arcade.overlap(player, buttons, buttonPressed, null, this);
 
     //moving platforms
-    if(movPlat1.body.y <= (23 * 20)) {
-    movPlat1.body.velocity.y = 50;
+    if (movPlat1.body.y <= (23 * 20)) {
+        movPlat1.body.velocity.y = 50;
     } else if (movPlat1.body.y >= (31 * 20)) {
-    movPlat1.body.velocity.y = -50;
+        movPlat1.body.velocity.y = -50;
     }
 
-    if(movPlat2.body.x <= (10 * 20)) {
-    movPlat2.body.velocity.x = 50;
+    if (movPlat2.body.x <= (10 * 20)) {
+        movPlat2.body.velocity.x = 50;
     } else if (movPlat2.body.x >= (27 * 20)) {
-    movPlat2.body.velocity.x = -50;
+        movPlat2.body.velocity.x = -50;
     }
 
 
@@ -274,7 +281,6 @@ function achievementUnlocked(achievement) {
     t.start();
 }
 
-
 function collectBall(player, ball) {
     checkAchievement("Ball Lover");
     ball.kill();
@@ -291,4 +297,8 @@ function killPlayer(player) {
     death.play();
     player.kill();
     player.reset(playerCoords[0], playerCoords[1]);
+}
+
+function buttonPressed(player, button) {
+    button.frame = 1;
 }
