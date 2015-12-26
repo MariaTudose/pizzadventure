@@ -1,8 +1,8 @@
-var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update});
+var game = new Phaser.Game(1000, 800, Phaser.AUTO, '', {preload: preload, create: create, update: update});
 
 
 var width = 800;
-var height = 600;
+var height = 800;
 
 var player;
 var platforms;
@@ -24,6 +24,7 @@ function preload() {
     game.load.audio('booster', ['audio/booster.ogg']);
     game.load.audio('death', ['audio/death.wav']);
     game.load.image('block', 'images/block.png');
+    game.load.image('mblock', 'images/mblock.png');
     game.load.image('achi', 'images/achi.png');
     game.load.image('menu', 'images/menu.png');
     game.load.image('ball', 'images/ball.png');
@@ -50,6 +51,7 @@ function create() {
     //music.play();
 
 
+    //platgorms
     platforms = game.add.group();
     platforms.enableBody = true;
 
@@ -95,7 +97,6 @@ function create() {
         return newline
     }
 
-
     function createPlat(x, y, width, height) {
         platforms.add(game.add.tileSprite(x, y, width, height, 'block'));
     }
@@ -126,6 +127,15 @@ function create() {
 
     platforms.setAll('body.immovable', true);
 
+
+    //moving platforms
+    movPlatforms = game.add.group();
+    movPlatforms.enableBody = true;
+
+    movPlat1 = game.add.sprite(5 * 20, 23 * 20, 'mblock');
+    movPlat2 = game.add.sprite(10 * 20, 3 * 20, 'mblock');
+    platforms.add(movPlat1);
+    platforms.add(movPlat2);
 
     //menu
     menu = game.add.sprite(805, 5, 'menu');
@@ -165,6 +175,19 @@ function update() {
     game.physics.arcade.overlap(player, boosters, boostPlayer, null, this);
     game.physics.arcade.overlap(player, spikes, killPlayer, null, this);
 
+
+    //moving platforms
+    if(movPlat1.body.y <= (23 * 20)) {
+        movPlat1.body.velocity.y = 50;
+    } else if (movPlat1.body.y >= (31 * 20)) {
+        movPlat1.body.velocity.y = -50;
+    }
+
+    if(movPlat2.body.x <= (10 * 20)) {
+        movPlat2.body.velocity.x = 50;
+    } else if (movPlat2.body.x >= (27 * 20)) {
+        movPlat2.body.velocity.x = -50;
+    }
 
     player.body.velocity.x = 0;
 
@@ -244,7 +267,6 @@ function achievementUnlocked(achievement) {
     achilist[achievement].alpha = 1;
     box = game.add.sprite(300, height - 55, 'achi');
     text = game.add.bitmapText(310, height - 45, 'font', 'Achievement unlocked !\n' + achievement, 16);
-
     s = this.game.add.tween(text).to({alpha: 0}, 4000, null);
     t = this.game.add.tween(box).to({alpha: 0}, 4000, null);
     s.start();
