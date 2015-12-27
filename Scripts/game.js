@@ -109,7 +109,9 @@ function create() {
     }
 
     function createBoost(x, y) {
-        boosters.create(x, y - 10, 'boost');
+        boost = game.add.sprite(x, y-10, 'boost');
+        boosters.add(boost);
+        boost.hitArea
     }
 
     function createSpike(x, y, width, height, u) {
