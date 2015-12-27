@@ -16,6 +16,7 @@ var achievements = ["Righteous", "Ball Lover", "There is no hope", "Not Entertai
 var unlocked = {};
 var achilist = {};
 var playerCoords;
+var eTiles = [];
 
 function preload() {
 
@@ -135,7 +136,9 @@ function create() {
         player.animations.add('right', [5, 6, 7, 8], 10, true);
     }
 
-    buttons.create(38 * 20, 38 * 20, 'button');
+    buttons.create(33 * 20, 38 * 20, 'button');
+    buttons.create(7 * 20, 17 * 20, 'button');
+    buttons.create(38 * 20, 5 * 20, 'button');
 
     //moving platforms
     movPlatforms = game.add.group();
@@ -147,6 +150,12 @@ function create() {
     platforms.add(movPlat2);
 
     platforms.setAll('body.immovable', true);
+
+    //platform to be erased by button press
+    for(var x = 1; x <= 8; x++) {
+        eTiles[x-1] = game.add.sprite((30+x)*20, 27*20, 'block');
+        platforms.add(eTiles[x-1])
+    }
 
     //menu
     menu = game.add.sprite(width + 5, 5, 'menu');
@@ -240,7 +249,7 @@ function mute() {
 
 function pause() {
     checkAchievement("Pausing is for sissies");
-    menu = game.add.sprite(width / 2, height / 2, 'button');
+    menu = game.add.sprite(width / 2, height / 2, 'menubutton');
     menu.scale.setTo(5, 5);
     menu.anchor.setTo(0.5, 0.5);
     game.paused = true;
@@ -255,11 +264,17 @@ function pause() {
 
 function info() {
     checkAchievement("Informed");
-    menu = game.add.sprite(width / 2, height / 2, 'button');
-    menu.scale.setTo(8, 5);
+    menu = game.add.sprite(width / 2, height / 2, 'menubutton');
+    menu.scale.setTo(8, 12);
     menu.anchor.setTo(0.5, 0.5);
     game.paused = true;
-    text = game.add.bitmapText(width / 2, height / 2, 'font', 'Collect as many achievements as you can!!!!\n\n\n' +
+    text = game.add.bitmapText(width / 2, height / 2, 'font', 
+        'Controls:\n' +
+        '\n\nRight - Right arrow key\n' +
+        'Left - Left arrow key\n' +
+        'Jump - Up arrow key\n' +
+        'Suicide - S\n\n' +
+        'Collect as many achievements as you can!!!!\n\n' +
         'By Maria Tudose & Linda Levänen', 16);
     text.anchor.setTo(0.5, 0.5);
     game.input.onDown.add(function () {
@@ -293,10 +308,11 @@ function collectBall(player, ball) {
 function boostPlayer(player) {
     checkAchievement("Bojoing");
     booster.play();
-    player.body.velocity.y = -600;
+    player.body.velocity.y = -500;
 }
 
 function killPlayer(player) {
+    /*check if suicide and give an achi*/
     checkAchievement("U ded");
     death.play();
     player.kill();
@@ -305,4 +321,17 @@ function killPlayer(player) {
 
 function buttonPressed(player, button) {
     button.frame = 1;
+    if (button.body.x == 660) {
+        platforms.add(game.add.tileSprite(36*20, 9*20, 3*20, 1*20, 'block'));
+    }
+    else if (button.body.x == 140) {
+        eTiles.forEach(function (val) {
+            val.kill();
+        });
+    }
+    else if (button.body.x == 760) {
+        platforms.add(game.add.tileSprite(7*20, 5*20, 1*20, 1*20, 'block'));
+    }
+
+    platforms.setAll('body.immovable', true);
 }
