@@ -146,12 +146,13 @@ function create() {
     buttons.create(38 * 20, 5 * 20, 'button');
 
     movPlat1 = game.add.sprite(5 * 20, 31 * 20, 'mblock');
-    movPlat2 = game.add.sprite(1 * 20, 3 * 20, 'mblock');
+    movPlat2 = game.add.sprite(20, 3 * 20, 'mblock');
     platforms.add(movPlat1);
     platforms.add(movPlat2);
 
     //platform to be erased by button press
-    createPlat(31*20, 27*20, 8*20, 20);
+    ePlat = game.add.tileSprite(31*20, 27*20, 8*20, 20, 'block')
+    platforms.add(ePlat);
 
     platforms.setAll('body.immovable', true);
 
@@ -207,7 +208,7 @@ function update() {
         movPlat1.body.velocity.y = -100;
     }
 
-    if (movPlat2.body.x <= (1 * 20)) {
+    if (movPlat2.body.x <= (20)) {
         movPlat2.body.velocity.x = 120;
     } else if (movPlat2.body.x >= (28 * 20)) {
         movPlat2.body.velocity.x = -120;
@@ -326,15 +327,13 @@ function killPlayer(player) {
 function buttonPressed(player, button) {
     button.frame = 1;
     if (button.body.x == 660) {
-        platforms.add(game.add.tileSprite(36*20, 9*20, 3*20, 1*20, 'block'));
+        platforms.add(game.add.tileSprite(36*20, 9*20, 3*20, 20, 'block'));
     }
     else if (button.body.x == 140) {
-        eTiles.forEach(function (val) {
-            val.kill();
-        });
+        ePlat.kill()
     }
     else if (button.body.x == 760) {
-        platforms.add(game.add.tileSprite(7*20, 5*20, 1*20, 1*20, 'block'));
+        platforms.add(game.add.tileSprite(7*20, 5*20, 20, 20, 'block'));
     }
 
     platforms.setAll('body.immovable', true);
