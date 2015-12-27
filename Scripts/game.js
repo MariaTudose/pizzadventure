@@ -148,13 +148,16 @@ function create() {
     platforms.add(movPlat1);
     platforms.add(movPlat2);
 
+    //platform to be erased by button press
+    createPlat(31*20, 27*20, 8*20, 20);
+
     platforms.setAll('body.immovable', true);
 
-    //platform to be erased by button press
-    for(var x = 1; x <= 8; x++) {
-        eTiles[x-1] = game.add.sprite((30+x)*20, 27*20, 'block');
-        platforms.add(eTiles[x-1])
-    }
+    //falling platforms
+    //for(var x = 1; x <= 8; x++) {
+    //    eTiles[x-1] = game.add.sprite((30+x)*20, 27*20, 'block');
+    //    platforms.add(eTiles[x-1])
+    //}
 
     //menu
     menu = game.add.sprite(width + 5, 5, 'menu');
