@@ -31,7 +31,7 @@ function preload() {
     game.load.image('ball', 'images/ball.png');
     game.load.image('menubutton', 'images/menubutton.png');
     game.load.image('boost', 'images/boost.png');
-    game.load.image('spike', 'images/spikes.png');
+    game.load.spritesheet('spike', 'images/spikes.png', 20, 20);
     game.load.spritesheet('pizza', 'images/pizza.png', 35, 30);
     game.load.spritesheet('button', 'images/button.png', 20, 20);
     game.load.bitmapFont('font', 'nokia16.png', 'nokia16.xml');
@@ -42,7 +42,7 @@ function preload() {
 function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.stage.backgroundColor = '#cccccc';
+    game.stage.backgroundColor = '#d9c58e';
 
     //sounds
     music = game.add.audio('music');
@@ -50,7 +50,7 @@ function create() {
     booster = game.add.audio('booster');
     achimusic = game.add.audio('achimusic');
     death = game.add.audio('death');
-    //music.play();
+    music.play();
 
 
     //platgorms
@@ -111,12 +111,15 @@ function create() {
         boosters.create(x, y - 10, 'boost');
     }
 
-    function createSpike(x, y, u) {
-        spike = game.add.sprite(x, y, 'spike');
-        game.physics.arcade.enable(spike);
-        spike.body.setSize(8,8);
-        spikes.add(spike);
-        if(typeof u !== "undefined") spike.scale.y *= -1;
+    function createSpike(x, y, width, height, u) {
+        spike = game.add.tileSprite(x, y, width, height, 'spike');
+        hitbox = game.add.tileSprite(x+4, y+4, width-8, height-8, 'spike');
+        hitbox.alpha = 0;
+        spike.body = null;
+        spikes.add(hitbox);
+        if(u == 20) spike.frame = 1;
+        else if(u == 40) spike.frame = 2;
+        else if(u == 60) spike.frame = 3;
     }
 
     function createBall(x, y) {
@@ -137,12 +140,8 @@ function create() {
 
     buttons.create(38 * 20, 38 * 20, 'button');
 
-    //moving platforms
-    movPlatforms = game.add.group();
-    movPlatforms.enableBody = true;
-
-    movPlat1 = game.add.sprite(5 * 20, 23 * 20, 'mblock');
-    movPlat2 = game.add.sprite(10 * 20, 3 * 20, 'mblock');
+    movPlat1 = game.add.sprite(5 * 20, 31 * 20, 'mblock');
+    movPlat2 = game.add.sprite(1 * 20, 3 * 20, 'mblock');
     platforms.add(movPlat1);
     platforms.add(movPlat2);
 
@@ -188,16 +187,16 @@ function update() {
     game.physics.arcade.overlap(player, buttons, buttonPressed, null, this);
 
     //moving platforms
-    if (movPlat1.body.y <= (23 * 20)) {
-        movPlat1.body.velocity.y = 50;
+    if (movPlat1.body.y <= (20 * 20)) {
+        movPlat1.body.velocity.y = 100;
     } else if (movPlat1.body.y >= (31 * 20)) {
-        movPlat1.body.velocity.y = -50;
+        movPlat1.body.velocity.y = -100;
     }
 
-    if (movPlat2.body.x <= (10 * 20)) {
-        movPlat2.body.velocity.x = 50;
-    } else if (movPlat2.body.x >= (27 * 20)) {
-        movPlat2.body.velocity.x = -50;
+    if (movPlat2.body.x <= (1 * 20)) {
+        movPlat2.body.velocity.x = 120;
+    } else if (movPlat2.body.x >= (28 * 20)) {
+        movPlat2.body.velocity.x = -120;
     }
 
 
@@ -293,7 +292,7 @@ function collectBall(player, ball) {
 function boostPlayer(player) {
     checkAchievement("Bojoing");
     booster.play();
-    player.body.velocity.y = -600;
+    player.body.velocity.y = -500;
 }
 
 function killPlayer(player) {
