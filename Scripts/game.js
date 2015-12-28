@@ -252,7 +252,9 @@ function update() {
     game.physics.arcade.overlap(player, portals, teleport, null, this);
 
     //check whether the player has all achis
-    //if(achievements.every(achi => unlocked[achi])) //miten kaikki paitsi yks
+    if(unlocked.length == achievements.length - 1) {
+        checkAchievement("Gotta get em all");
+    }
 
     //check if has pressed every button
     if(buttonCount == 3){
