@@ -16,7 +16,6 @@ var achievements = ["Righteous", "Ball Lover", "There is no hope", "Not Entertai
 var unlocked = {};
 var achilist = {};
 var playerCoords;
-var eTiles = [];
 
 function preload() {
 
@@ -25,6 +24,10 @@ function preload() {
     game.load.audio('jump', ['audio/jump.ogg']);
     game.load.audio('booster', ['audio/booster.ogg']);
     game.load.audio('death', ['audio/death.wav']);
+    game.load.audio('ball', ['audio/ball.ogg']);
+    game.load.audio('menubutton', ['audio/menubutton.ogg']);
+    game.load.audio('button', ['audio/button.ogg']);
+    game.load.audio('teleport', ['audio/teleport.ogg']);
     game.load.image('block', 'images/block.png');
     game.load.image('mblock', 'images/mblock.png');
     game.load.image('achi', 'images/achi.png');
@@ -43,7 +46,7 @@ function preload() {
 function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.stage.backgroundColor = '#d9c58e';
+    game.stage.backgroundColor = '#E8D5B7';
 
     //sounds
     music = game.add.audio('music');
@@ -51,6 +54,9 @@ function create() {
     booster = game.add.audio('booster');
     achimusic = game.add.audio('achimusic');
     death = game.add.audio('death');
+    sbutton = game.add.audio('button');
+    smenubutton = game.add.audio('menubutton');
+    sball = game.add.audio('ball');
     music.play();
 
 
@@ -248,12 +254,14 @@ function update() {
 
 function mute() {
     checkAchievement("Not Entertained");
+    smenubutton.play();
     if (music.paused) music.resume();
     else music.pause();
 }
 
 function pause() {
     checkAchievement("Pausing is for sissies");
+    smenubutton.play();
     menu = game.add.sprite(width / 2, height / 2, 'menubutton');
     menu.scale.setTo(5, 5);
     menu.anchor.setTo(0.5, 0.5);
@@ -269,6 +277,7 @@ function pause() {
 
 function info() {
     checkAchievement("Informed");
+    smenubutton.play();
     menu = game.add.sprite(width / 2, height / 2, 'menubutton');
     menu.scale.setTo(8, 12);
     menu.anchor.setTo(0.5, 0.5);
@@ -307,6 +316,7 @@ function achievementUnlocked(achievement) {
 
 function collectBall(player, ball) {
     checkAchievement("Ball Lover");
+    sball.play();
     ball.kill();
 }
 
@@ -325,6 +335,7 @@ function killPlayer(player) {
 }
 
 function buttonPressed(player, button) {
+    if(button.frame == 0)sbutton.play();
     button.frame = 1;
     if (button.body.x == 660) {
         platforms.add(game.add.tileSprite(36*20, 9*20, 3*20, 20, 'block'));
