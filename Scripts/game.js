@@ -13,10 +13,16 @@ var text;
 var box;
 var achievements = ["Righteous", "Ball Lover", "There is no hope", "Not Entertained", "Don't die", "Leftist", "U ded", "Malaria",
     "Too damn high", "Danger Zone", "Hallelujah", "Informed", "Pausing is for sissies", "Supernova", "Bojoing", "The Terminator", "Intouchable",
-    "Secret1", "Secret2", "Secret3"];
+    "Secret1", "Secret2", "Secret3", "Secret4", "Secretive", "Zoop", "Boop", "Not a joke", "Collector", "Klakitiklak", "Gotta get em all"];
 var unlocked = {};
 var achilist = {};
 var playerCoords;
+var buttonCount = 0;
+var ballCount = 0;
+var button1pressed = false;
+var button2pressed = false;
+var button3pressed = false;
+var ballsAmount;
 
 function preload() {
 
@@ -36,9 +42,11 @@ function preload() {
     game.load.image('ball', 'images/ball.png');
     game.load.image('menubutton', 'images/menubutton.png');
     game.load.image('boost', 'images/boost.png');
+    game.load.image('invisibleTile', 'images/invisibleTile.png')
     game.load.spritesheet('spike', 'images/spikes.png', 20, 20);
     game.load.spritesheet('pizza', 'images/pizza.png', 35, 30);
     game.load.spritesheet('button', 'images/button.png', 20, 20);
+    game.load.spritesheet('portal', 'images/portalsheet2.png', 32, 32, 4);
     game.load.bitmapFont('font', 'nokia16.png', 'nokia16.xml');
     game.load.text('map', 'map.txt');
 
@@ -81,6 +89,10 @@ function create() {
     buttons = game.add.group();
     buttons.enableBody = true;
 
+    //portals
+    portals = game.add.group();
+    portals.enableBody = true;
+
     //parse through game objects
     var map = game.cache.getText('map').split('\n');
 
@@ -99,7 +111,17 @@ function create() {
             for (var x = 1; x <= amount; x++) createSpike.apply(this, parseLine(map[i + x]));
         } else if (map[i] == 'BALLS') {
             amount = map[++i];
+            ballsAmount = amount;
             for (var x = 1; x <= amount; x++) createBall.apply(this, parseLine(map[i + x]));
+        } else if (map[i] == 'PORTALS') {
+            amount = map[++i];
+            for (var x = 1; x <= amount; x++) createPortal.apply(this, parseLine(map[i + x]));
+        } else if (map[i] == 'SECRETS') {
+            amount = map[++i];
+            for (var x = 1; x <= amount; x++) createSecret.apply(this, parseLine(map[i + x]));
+        } else if (map[i] == 'BUTTONS') {
+            amount = map[++i];
+            for (var x = 1; x <= amount; x++) createButton.apply(this, parseLine(map[i + x]));
         }
         i++;
     }
@@ -148,9 +170,24 @@ function create() {
         player.animations.add('right', [5, 6, 7, 8], 10, true);
     }
 
-    buttons.create(33 * 20, 38 * 20, 'button');
-    buttons.create(7 * 20, 17 * 20, 'button');
-    buttons.create(38 * 20, 5 * 20, 'button');
+    function createPortal(x, y) {
+        portal = game.add.sprite(x-16, y+5, 'portal');
+        portals.add(portal);
+        var around = portal.animations.add('around');
+        portal.animations.play('around', 5, true);
+    }
+
+    function createSecret(x, y, type) {
+        if (type == 20) {
+             game.add.sprite(x, y, 'spike');
+        } else {
+            game.add.sprite(x, y, 'block');
+        }
+    }
+
+    function createButton(x,y) {
+        buttons.create(x, y, 'button');
+    }
 
     movPlat1 = game.add.sprite(5 * 20, 31 * 20, 'mblock');
     movPlat2 = game.add.sprite(20, 3 * 20, 'mblock');
@@ -161,6 +198,10 @@ function create() {
     ePlat = game.add.tileSprite(31*20, 27*20, 8*20, 20, 'block')
     platforms.add(ePlat);
 
+    //invisible wall next to game area
+    invisibleWall = game.add.tileSprite(40*20, 0, 20, 40*20, 'invisibleTile');
+    platforms.add(invisibleWall);
+
     platforms.setAll('body.immovable', true);
 
     //falling platforms
@@ -168,16 +209,6 @@ function create() {
     //    eTiles[x-1] = game.add.sprite((30+x)*20, 27*20, 'block');
     //    platforms.add(eTiles[x-1])
     //}
-
-    //secret route images
-    game.add.sprite(16*20, 38*20, 'spike');
-    game.add.sprite(17*20, 38*20, 'spike');
-    game.add.sprite(16*20, 39*20, 'block');
-    game.add.sprite(17*20, 39*20, 'block');
-    game.add.sprite(0, 35*20, 'block');
-    game.add.sprite(0, 36*20, 'block');
-    game.add.sprite(0, 16*20, 'block');
-    game.add.sprite(0, 17*20, 'block');
 
     //menu
     menu = game.add.sprite(width + 5, 5, 'menu');
@@ -217,17 +248,39 @@ function update() {
     game.physics.arcade.overlap(player, boosters, boostPlayer, null, this);
     game.physics.arcade.overlap(player, spikes, killPlayer, null, this);
     game.physics.arcade.overlap(player, buttons, buttonPressed, null, this);
+    game.physics.arcade.overlap(player, portals, teleport, null, this);
+
+    //check whether the player has all achis
+    //if(achievements.every(achi => unlocked[achi])) //miten kaikki paitsi yks
+
+    //check if has pressed every button
+    if(buttonCount == 3){
+        checkAchievement("Klakitiklak");
+    } 
+
+    //collected all the balls
+    if(ballCount == ballsAmount) {
+        checkAchievement("Collector");
+    }
+
+    //all the secrets
+    if(unlocked["Secret1"] && unlocked["Secret2"] && unlocked["Secret3"] && unlocked["Secret4"]){
+        checkAchievement("Secretive");
+    }
 
     //check secret coordinates
     if(player.body.y > (38*20)-16) {
         checkAchievement("Secret1");
     }
-    else if(player.body.x == 0) {
-        if(player.body.y < 20) {
+    if(player.body.x == 0) {
+        if(player.body.y < 20*20) {
             checkAchievement("Secret2");
         } else {
             checkAchievement("Secret3");
         }
+    }
+    if (player.body.x > 38*20) {
+        checkAchievement("Secret4");
     }
     
     //moving platforms
@@ -275,6 +328,7 @@ function update() {
 
     this.game.input.keyboard.onDownCallback = function(e) {
         if(e.keyCode == 83) {
+            checkAchievement("Not a joke")
             killPlayer(player);
         }
     }
@@ -346,6 +400,7 @@ function achievementUnlocked(achievement) {
 function collectBall(player, ball) {
     checkAchievement("Ball Lover");
     sball.play();
+    ballCount++;
     ball.kill();
 }
 
@@ -356,7 +411,6 @@ function boostPlayer(player) {
 }
 
 function killPlayer(player) {
-    /*check if suicide and give an achi*/
     checkAchievement("U ded");
     death.play();
     player.kill();
@@ -364,17 +418,43 @@ function killPlayer(player) {
 }
 
 function buttonPressed(player, button) {
+    checkAchievement("Boop");
     if(button.frame == 0)sbutton.play();
     button.frame = 1;
     if (button.body.x == 660) {
         platforms.add(game.add.tileSprite(36*20, 9*20, 3*20, 20, 'block'));
+        if(button1pressed == false) {
+            buttonCount++;
+            button1pressed = true;
+        }
     }
     else if (button.body.x == 140) {
         ePlat.kill()
+        if(button2pressed == false) {
+            buttonCount++;
+            button2pressed = true;
+        }
     }
     else if (button.body.x == 760) {
-        platforms.add(game.add.tileSprite(7*20, 5*20, 20, 20, 'block'));
+        platforms.add(game.add.tileSprite(7*20, 6*20, 20, 20, 'block'));
+        if(button3pressed == false) {
+            buttonCount++;
+            button3pressed = true;
+        }
+
     }
 
     platforms.setAll('body.immovable', true);
 }
+
+function teleport(player, portal) {
+    checkAchievement("Zoop");
+    if (portal.body.y == 37*20+5) {
+        player.reset(2*20, 10*20);
+    } else if (portal.body.y == 20*20+5) {
+        killPlayer(player);
+    } else if (portal.body.y == 1*20+5) {
+        player.reset(1*20, 22*20)
+    }
+}
+
