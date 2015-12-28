@@ -13,7 +13,7 @@ var text;
 var box;
 var achievements = ["Righteous", "Ball Lover", "There is no hope", "Not Entertained", "Don't die", "Leftist", "U ded", "Malaria",
     "Too damn high", "Danger Zone", "Hallelujah", "Informed", "Pausing is for sissies", "Supernova", "Bojoing", "The Terminator", "Intouchable",
-    "Secret1", "Secret2", "Secret3", "Secret4", "Secretive", "Zoop", "Boop", "Not a joke", "Collector", "Klakitiklak", "Gotta get em all"];
+    "Secret1", "Secret2", "Secret3", "Secret4", "Secretive", "Zoop", "Boop", "Not a joke", "Click", "New game", "Collector", "Klakitiklak", "Gotta get em all"];
 var unlocked = {};
 var achilist = {};
 var playerCoords;
@@ -67,7 +67,6 @@ function create() {
     smenubutton = game.add.audio('menubutton');
     sball = game.add.audio('ball');
     music.play();
-
 
     //platgorms
     platforms = game.add.group();
@@ -234,8 +233,9 @@ function create() {
     game.add.bitmapText(width + 75, height - 24, 'font', 'Pause', 16);
     game.add.bitmapText(width + 140, height - 24, 'font', 'Info', 16);
 
-
     cursors = game.input.keyboard.createCursorKeys();
+
+    checkAchievement("New game");
 
 }
 
@@ -266,6 +266,16 @@ function update() {
     //all the secrets
     if(unlocked["Secret1"] && unlocked["Secret2"] && unlocked["Secret3"] && unlocked["Secret4"]){
         checkAchievement("Secretive");
+    }
+
+    //track mouse clicking
+    var x = game.input.activePointer.positionDown.x
+    var y = game.input.activePointer.positionDown.y
+
+    var area = new Phaser.Rectangle(1, 1, 39*20, 39*20);
+
+    if (area.contains(x, y)) {
+        checkAchievement("Click");
     }
 
     //check secret coordinates
