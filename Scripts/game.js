@@ -269,7 +269,7 @@ function update() {
     }
 
     //check secret coordinates
-    if(player.body.y > (38*20)-16) {
+    if(player.body.y > (38*20)) {
         checkAchievement("Secret1");
     }
     if(player.body.x == 0) {
