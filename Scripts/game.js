@@ -66,6 +66,7 @@ function create() {
     sbutton = game.add.audio('button');
     smenubutton = game.add.audio('menubutton');
     sball = game.add.audio('ball');
+    steleport = game.add.audio('teleport');
     music.play();
 
 
@@ -450,10 +451,13 @@ function buttonPressed(player, button) {
 function teleport(player, portal) {
     checkAchievement("Zoop");
     if (portal.body.y == 37*20+5) {
+        steleport.play();
         player.reset(2*20, 10*20);
     } else if (portal.body.y == 20*20+5) {
+        steleport.play();
         killPlayer(player);
     } else if (portal.body.y == 1*20+5) {
+        steleport.play();
         player.reset(1*20, 22*20)
     }
 }
