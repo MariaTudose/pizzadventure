@@ -12,7 +12,8 @@ var jump;
 var text;
 var box;
 var achievements = ["Righteous", "Ball Lover", "There is no hope", "Not Entertained", "Don't die", "Leftist", "U ded", "Malaria",
-    "Too damn high", "Danger Zone", "Hallelujah", "Informed", "Pausing is for sissies", "Supernova", "Bojoing", "The Terminator", "Intouchable"];
+    "Too damn high", "Danger Zone", "Hallelujah", "Informed", "Pausing is for sissies", "Supernova", "Bojoing", "The Terminator", "Intouchable",
+    "Secret1", "Secret2", "Secret3"];
 var unlocked = {};
 var achilist = {};
 var playerCoords;
@@ -168,6 +169,16 @@ function create() {
     //    platforms.add(eTiles[x-1])
     //}
 
+    //secret route images
+    game.add.sprite(16*20, 38*20, 'spike');
+    game.add.sprite(17*20, 38*20, 'spike');
+    game.add.sprite(16*20, 39*20, 'block');
+    game.add.sprite(17*20, 39*20, 'block');
+    game.add.sprite(0, 35*20, 'block');
+    game.add.sprite(0, 36*20, 'block');
+    game.add.sprite(0, 16*20, 'block');
+    game.add.sprite(0, 17*20, 'block');
+
     //menu
     menu = game.add.sprite(width + 5, 5, 'menu');
     game.add.bitmapText(width + 20, 15, 'font', 'Achievements', 20);
@@ -207,6 +218,18 @@ function update() {
     game.physics.arcade.overlap(player, spikes, killPlayer, null, this);
     game.physics.arcade.overlap(player, buttons, buttonPressed, null, this);
 
+    //check secret coordinates
+    if(player.body.y > (38*20)-16) {
+        checkAchievement("Secret1");
+    }
+    else if(player.body.x == 0) {
+        if(player.body.y < 20) {
+            checkAchievement("Secret2");
+        } else {
+            checkAchievement("Secret3");
+        }
+    }
+    
     //moving platforms
     if (movPlat1.body.y <= (20 * 20)) {
         movPlat1.body.velocity.y = 100;
@@ -250,6 +273,12 @@ function update() {
         checkAchievement("Too damn high");
     }
 
+    this.game.input.keyboard.onDownCallback = function(e) {
+        if(e.keyCode == 83) {
+            killPlayer(player);
+        }
+    }
+
 }
 
 function mute() {
@@ -283,8 +312,8 @@ function info() {
     menu.anchor.setTo(0.5, 0.5);
     game.paused = true;
     text = game.add.bitmapText(width / 2, height / 2, 'font', 
-        'Controls:\n' +
-        '\n\nRight - Right arrow key\n' +
+        'Controls:\n\n' +
+        'Right - Right arrow key\n' +
         'Left - Left arrow key\n' +
         'Jump - Up arrow key\n' +
         'Suicide - S\n\n' +
