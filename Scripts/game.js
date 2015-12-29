@@ -48,7 +48,7 @@ function preload() {
     game.load.spritesheet('button', 'images/button.png', 20, 20);
     game.load.spritesheet('portal', 'images/portalsheet2.png', 32, 32, 4);
     game.load.bitmapFont('font', 'nokia16.png', 'nokia16.xml');
-    game.load.text('map', 'map.txt');
+    game.load.text('map', 'lvl_structure/map.txt');
 
 }
 
