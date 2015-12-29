@@ -30,7 +30,7 @@ function preload() {
     game.load.audio('achimusic', ['audio/achi.wav']);
     game.load.audio('jump', ['audio/jump.ogg']);
     game.load.audio('booster', ['audio/booster.ogg']);
-    game.load.audio('death', ['audio/death.wav']);
+    game.load.audio('death', ['audio/death.ogg']);
     game.load.audio('ball', ['audio/ball.ogg']);
     game.load.audio('menubutton', ['audio/menubutton.ogg']);
     game.load.audio('button', ['audio/button.ogg']);
@@ -418,7 +418,7 @@ function achievementUnlocked(achievement) {
     this.game.add.tween(text).to({alpha: 0}, 1000, null, true, 2500).start();
     this.game.add.tween(box).to({alpha: 0}, 1000, null, true, 2500).start();
     i++;
-    if(i == achievements.length) achievementUnlocked("Gotta get em all");
+    if(i == achievements.length - 1) achievementUnlocked("Gotta get em all");
 }
 
 function collectBall(player, ball) {
@@ -475,13 +475,14 @@ function teleport(player, portal) {
     checkAchievement("Zoop");
     if (portal.body.y == 37*20+5) {
         steleport.play();
-        player.reset(2*20, 10*20);
+        player.reset(1*20, 22*20);
     } else if (portal.body.y == 20*20+5) {
         steleport.play();
         killPlayer(player);
     } else if (portal.body.y == 1*20+5) {
         steleport.play();
-        player.reset(1*20, 22*20)
+        player.reset(2*20, 10*20);
+
     }
 }
 
