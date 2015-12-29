@@ -11,9 +11,9 @@ var achimusic;
 var jump;
 var text;
 var box;
-var achievements = ["Righteous", "Ball Lover", "There is no hope", "Not Entertained", "Don't die", "Leftist", "U ded", "Malaria",
-    "Too damn high", "Danger Zone", "Hallelujah", "Informed", "Pausing is for sissies", "Supernova", "Bojoing", "The Terminator", "Intouchable",
-    "Secret1", "Secret2", "Secret3", "Secret4", "Secretive", "Zoop", "Boop", "Not a joke", "Click", "New game", "Collector", "Klakitiklak", "Gotta get em all"];
+var achievements = ["Righteous", "Ball Lover", "Not Entertained", "Leftist", "U ded",
+    "Too damn high", "Informed", "Pausing is for sissies", "Bojoing", "Click", "New game",
+    "Secret1", "Secret2", "Secret3", "Secret4", "Secretive", "Zoop", "Boop", "Suicide is the answer", "Collector", "Expert Buttoneer", "Gotta get em all"];
 var unlocked = {};
 var achilist = {};
 var playerCoords;
@@ -48,7 +48,7 @@ function preload() {
     game.load.spritesheet('button', 'images/button.png', 20, 20);
     game.load.spritesheet('portal', 'images/portalsheet2.png', 32, 32, 4);
     game.load.bitmapFont('font', 'nokia16.png', 'nokia16.xml');
-    game.load.text('map', 'map.txt');
+    game.load.text('map', 'lvl_structure/map.txt');
 
 }
 
@@ -66,6 +66,7 @@ function create() {
     sbutton = game.add.audio('button');
     smenubutton = game.add.audio('menubutton');
     sball = game.add.audio('ball');
+    steleport = game.add.audio('teleport');
     music.play();
 
     //platgorms
@@ -251,12 +252,14 @@ function update() {
     game.physics.arcade.overlap(player, portals, teleport, null, this);
 
     //check whether the player has all achis
-    //if(achievements.every(achi => unlocked[achi])) //miten kaikki paitsi yks
+    if(unlocked.length == achievements.length - 1) {
+        checkAchievement("Gotta get em all");
+    }
 
     //check if has pressed every button
     if(buttonCount == 3){
-        checkAchievement("Klakitiklak");
-    } 
+        checkAchievement("Expert Buttoneer");
+    }
 
     //collected all the balls
     if(ballCount == ballsAmount) {
@@ -292,7 +295,7 @@ function update() {
     if (player.body.x > 38*20) {
         checkAchievement("Secret4");
     }
-    
+
     //moving platforms
     if (movPlat1.body.y <= (20 * 20)) {
         movPlat1.body.velocity.y = 100;
@@ -338,12 +341,12 @@ function update() {
 
     this.game.input.keyboard.onDownCallback = function(e) {
         if(e.keyCode == 83) {
-            checkAchievement("Not a joke")
+            checkAchievement("Suicide is the answer")
             killPlayer(player);
         }
     }
-
 }
+
 
 function mute() {
     checkAchievement("Not Entertained");
@@ -351,6 +354,8 @@ function mute() {
     if (music.paused) music.resume();
     else music.pause();
 }
+
+
 
 function pause() {
     checkAchievement("Pausing is for sissies");
@@ -375,7 +380,7 @@ function info() {
     menu.scale.setTo(8, 12);
     menu.anchor.setTo(0.5, 0.5);
     game.paused = true;
-    text = game.add.bitmapText(width / 2, height / 2, 'font', 
+    text = game.add.bitmapText(width / 2, height / 2, 'font',
         'Controls:\n\n' +
         'Right - Right arrow key\n' +
         'Left - Left arrow key\n' +
@@ -395,16 +400,25 @@ function checkAchievement(achievement) {
     if (!unlocked[achievement]) achievementUnlocked(achievement);
 }
 
+var i = 0;
+aboxes = [];
+
 function achievementUnlocked(achievement) {
     achimusic.play();
     unlocked[achievement] = true;
     achilist[achievement].alpha = 1;
-    box = game.add.sprite(300, height - 55, 'achi');
-    text = game.add.bitmapText(310, height - 45, 'font', 'Achievement unlocked !\n' + achievement, 16);
-    s = this.game.add.tween(text).to({alpha: 0}, 4000, null);
-    t = this.game.add.tween(box).to({alpha: 0}, 4000, null);
-    s.start();
-    t.start();
+    box = game.add.sprite(300, height - 15, 'achi');
+    text = game.add.bitmapText(310, height - 5, 'font', 'Achievement unlocked !\n' + achievement, 16);
+    aboxes.push(box);
+    aboxes.push(text);
+    for(var b in aboxes) {
+        s = aboxes[b];
+        game.add.tween(s).to({y: s.y - 50},50).start();
+    };
+    this.game.add.tween(text).to({alpha: 0}, 1000, null, true, 2500).start();
+    this.game.add.tween(box).to({alpha: 0}, 1000, null, true, 2500).start();
+    i++;
+    if(i == achievements.length) achievementUnlocked("Gotta get em all");
 }
 
 function collectBall(player, ball) {
@@ -460,10 +474,13 @@ function buttonPressed(player, button) {
 function teleport(player, portal) {
     checkAchievement("Zoop");
     if (portal.body.y == 37*20+5) {
+        steleport.play();
         player.reset(2*20, 10*20);
     } else if (portal.body.y == 20*20+5) {
+        steleport.play();
         killPlayer(player);
     } else if (portal.body.y == 1*20+5) {
+        steleport.play();
         player.reset(1*20, 22*20)
     }
 }
