@@ -11,9 +11,10 @@ var achimusic;
 var jump;
 var text;
 var box;
-var achievements = ["Righteous", "Ball Lover", "Not Entertained", "Leftist", "U ded",
+var achievements = ["Righteous", "Ball Lover", "Not Entertained", "Leftist", "U ded", "100deaths",
     "Too damn high", "Informed", "Pausing is for sissies", "Bojoing", "Click", "New game",
-    "Secret1", "Secret2", "Secret3", "Secret4", "Secretive", "Zoop", "Boop", "Suicide is the answer", "Collector", "Expert Buttoneer", "Gotta get em all"];
+    "Secret1", "Secret2", "Secret3", "Secret4", "Secretive", "Zoop", "Boop", "Suicide is the answer",
+     "Collector", "Expert Buttoneer", "Gotta get em all"];
 var unlocked = {};
 var achilist = {};
 var playerCoords;
@@ -23,6 +24,7 @@ var button1pressed = false;
 var button2pressed = false;
 var button3pressed = false;
 var ballsAmount;
+var deathCount = 0;
 
 function preload() {
 
@@ -251,11 +253,6 @@ function update() {
     game.physics.arcade.overlap(player, buttons, buttonPressed, null, this);
     game.physics.arcade.overlap(player, portals, teleport, null, this);
 
-    //check whether the player has all achis
-    if(unlocked.length == achievements.length - 1) {
-        checkAchievement("Gotta get em all");
-    }
-
     //check if has pressed every button
     if(buttonCount == 3){
         checkAchievement("Expert Buttoneer");
@@ -418,7 +415,7 @@ function achievementUnlocked(achievement) {
     this.game.add.tween(text).to({alpha: 0}, 1000, null, true, 2500).start();
     this.game.add.tween(box).to({alpha: 0}, 1000, null, true, 2500).start();
     i++;
-    if(i == achievements.length) achievementUnlocked("Gotta get em all");
+    if(i == achievements.length - 1) achievementUnlocked("Gotta get em all");
 }
 
 function collectBall(player, ball) {
@@ -436,9 +433,11 @@ function boostPlayer(player) {
 
 function killPlayer(player) {
     checkAchievement("U ded");
+    deathCount++;
     death.play();
     player.kill();
     player.reset(playerCoords[0], playerCoords[1]);
+    if(deathCount == 100) checkAchievement("100deaths");
 }
 
 function buttonPressed(player, button) {
