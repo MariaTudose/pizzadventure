@@ -14,7 +14,7 @@ function preload() {
         game.load.image('block', 'images/block.png');
         game.load.image('mblock', 'images/mblock.png');
         game.load.image('achi', 'images/achi.png');
-        game.load.image('menu', 'images/menu.png');
+        game.load.image('menu', 'images/menu2.png');
         game.load.image('ball', 'images/ball.png');
         game.load.image('menubutton', 'images/menubutton.png');
         game.load.image('boost', 'images/boost.png');
