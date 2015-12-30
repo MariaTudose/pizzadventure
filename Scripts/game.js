@@ -11,7 +11,7 @@ var achimusic;
 var jump;
 var text;
 var box;
-var achievements = ["Righteous", "Your First Ball!", "Ball Lover", "Not Entertained", "Leftist", "U ded", "100deaths",
+var achievements = ["Righteous", "Your First Ball!", "Ball Lover", "Not Entertained", "U don't need that", "Leftist", "U ded", "50deaths",
     "Too damn high", "Informed", "Pausing is for sissies", "Bojoing", "Click", "New game",
     "Secret1", "Secret2", "Secret3", "Secret4", "Secretive", "Zoop", "Boop", "Suicide is the answer",
     "Expert Buttoneer", "Gotta get em all"];
@@ -37,6 +37,8 @@ function preload() {
     game.load.audio('menubutton', ['audio/menubutton.ogg']);
     game.load.audio('button', ['audio/button.ogg']);
     game.load.audio('teleport', ['audio/teleport.ogg']);
+    game.load.audio('disappear', ['audio/dissappear.ogg']);
+    game.load.audio('appear', ['audio/appear.ogg']);
     game.load.image('block', 'images/block.png');
     game.load.image('mblock', 'images/mblock.png');
     game.load.image('achi', 'images/achi.png');
@@ -69,6 +71,9 @@ function create() {
     smenubutton = game.add.audio('menubutton');
     sball = game.add.audio('ball');
     steleport = game.add.audio('teleport');
+    appear = game.add.audio('appear');
+    disappear = game.add.audio('disappear');
+
     music.play();
 
     //platgorms
@@ -336,6 +341,10 @@ function update() {
         checkAchievement("Too damn high");
     }
 
+    if (cursors.down.isDown) {
+        checkAchievement("U dont need that");
+    }
+
     this.game.input.keyboard.onDownCallback = function(e) {
         if(e.keyCode == 83) {
             checkAchievement("Suicide is the answer")
@@ -437,30 +446,44 @@ function killPlayer(player) {
     death.play();
     player.kill();
     player.reset(playerCoords[0], playerCoords[1]);
-    if(deathCount == 100) checkAchievement("100deaths");
+    if(deathCount == 50) checkAchievement("50deaths");
 }
 
 function buttonPressed(player, button) {
     checkAchievement("Boop");
     if(button.frame == 0)sbutton.play();
     button.frame = 1;
+
     if (button.body.x == 660) {
-        platforms.add(game.add.tileSprite(36*20, 9*20, 3*20, 20, 'block'));
         if(button1pressed == false) {
+            appear.play();
+            blocks = game.add.tileSprite(36*20, 9*20, 3*20, 20, 'block');
+            platforms.add(blocks)
+            blocks.alpha = 0;
+            tween = game.add.tween(blocks).to({alpha: 1}, 1000, null, true, 0).start();
+
             buttonCount++;
             button1pressed = true;
         }
     }
     else if (button.body.x == 140) {
-        ePlat.kill()
         if(button2pressed == false) {
+            disappear.play();
+            ePlat.kill();
+            blocks = game.add.tileSprite(31*20, 27*20, 8*20, 20, 'block');
+            game.add.tween(blocks).to({alpha: 0}, 1000, null, true, 0).start();
+
             buttonCount++;
             button2pressed = true;
         }
     }
     else if (button.body.x == 760) {
-        platforms.add(game.add.tileSprite(7*20, 6*20, 20, 20, 'block'));
         if(button3pressed == false) {
+            appear.play();
+            blocks = game.add.tileSprite(7*20, 6*20, 20, 20, 'block');
+            platforms.add(blocks)
+            blocks.alpha = 0;
+            tween = game.add.tween(blocks).to({alpha: 1}, 1000, null, true, 0).start();
             buttonCount++;
             button3pressed = true;
         }
