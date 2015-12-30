@@ -11,10 +11,10 @@ var achimusic;
 var jump;
 var text;
 var box;
-var achievements = ["Righteous", "Ball Lover", "Not Entertained", "Leftist", "U ded", "100deaths",
+var achievements = ["Righteous", "Your First Ball!", "Ball Lover", "Not Entertained", "Leftist", "U ded", "100deaths",
     "Too damn high", "Informed", "Pausing is for sissies", "Bojoing", "Click", "New game",
     "Secret1", "Secret2", "Secret3", "Secret4", "Secretive", "Zoop", "Boop", "Suicide is the answer",
-     "Collector", "Expert Buttoneer", "Gotta get em all"];
+    "Expert Buttoneer", "Gotta get em all"];
 var unlocked = {};
 var achilist = {};
 var playerCoords;
@@ -260,7 +260,7 @@ function update() {
 
     //collected all the balls
     if(ballCount == ballsAmount) {
-        checkAchievement("Collector");
+        checkAchievement("Ball Lover");
     }
 
     //all the secrets
@@ -418,8 +418,8 @@ function achievementUnlocked(achievement) {
     if(i == achievements.length - 1) achievementUnlocked("Gotta get em all");
 }
 
-function collectBall(player, ball) {
-    checkAchievement("Ball Lover");
+function collectBall(ball) {
+    checkAchievement("Your First Ball!");
     sball.play();
     ballCount++;
     ball.kill();
