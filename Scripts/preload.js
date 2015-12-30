@@ -1,6 +1,6 @@
 function preload() {
 
-    game.load.image('logo', 'images/logo.png');
+    game.load.image('logo', 'images/logo3.png');
     game.load.audio('music', ['audio/music.ogg']);
     game.load.audio('achimusic', ['audio/achi.wav']);
     game.load.audio('jump', ['audio/jump.ogg']);
