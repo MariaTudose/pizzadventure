@@ -245,7 +245,6 @@ function update() {
 
 
     game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.collide(balls, platforms);
     game.physics.arcade.overlap(player, balls, collectBall, null, this);
     game.physics.arcade.overlap(player, boosters, boostPlayer, null, this);
     game.physics.arcade.overlap(player, spikes, killPlayer, null, this);
@@ -334,6 +333,7 @@ function update() {
         checkAchievement("DOWN SYNDROME");
     }
 
+    //if the player presses S
     this.game.input.keyboard.onDownCallback = function(e) {
         if(e.keyCode == 83) {
             checkAchievement("SUICIDE IS THE ANSWER")
