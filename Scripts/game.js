@@ -11,50 +11,19 @@ var achimusic;
 var jump;
 var text;
 var box;
-var achievements = ["Righteous", "Your First Ball!", "Ball Lover", "Not Entertained", "U don't need that", "Leftist", "U ded", "50deaths",
-    "Too damn high", "Informed", "Pausing is for sissies", "Bojoing", "Click", "New game",
-    "Secret1", "Secret2", "Secret3", "Secret4", "Secretive", "Zoop", "Boop", "Suicide is the answer",
+var achievements = ["New Game", "Leftist", "Righteous", "Jump Like a Sissy", "Down Syndrome", "High as a Kite", "Your First Ball!",
+    "Ball Lover", "avoid spikes dummy", "JEsus the spikes man", "wow you really suck", "Not Entertained", "Informed",
+    "Pausing is for sissies", "Clicking won't help", "Bro, It's a Prank!!", "how did u find dis?!?!", "Not this way", "Whew!", 
+    "Are You Blind?", "all the salars", "Useless", "No Way Out", "Suicide is the answer", "Open Sesame", "Mission Impossible",
     "Expert Buttoneer", "Gotta get em all"];
 var unlocked = {};
 var achilist = {};
 var playerCoords;
-var buttonCount = 0;
 var ballCount = 0;
-var button1pressed = false;
-var button2pressed = false;
-var button3pressed = false;
+var buttonsPressed = [false,false,false];
 var ballsAmount;
 var deathCount = 0;
 
-function preload() {
-
-    game.load.audio('music', ['audio/music.ogg']);
-    game.load.audio('achimusic', ['audio/achi.wav']);
-    game.load.audio('jump', ['audio/jump.ogg']);
-    game.load.audio('booster', ['audio/booster.ogg']);
-    game.load.audio('death', ['audio/death.ogg']);
-    game.load.audio('ball', ['audio/ball.ogg']);
-    game.load.audio('menubutton', ['audio/menubutton.ogg']);
-    game.load.audio('button', ['audio/button.ogg']);
-    game.load.audio('teleport', ['audio/teleport.ogg']);
-    game.load.audio('disappear', ['audio/dissappear.ogg']);
-    game.load.audio('appear', ['audio/appear.ogg']);
-    game.load.image('block', 'images/block.png');
-    game.load.image('mblock', 'images/mblock.png');
-    game.load.image('achi', 'images/achi.png');
-    game.load.image('menu', 'images/menu.png');
-    game.load.image('ball', 'images/ball.png');
-    game.load.image('menubutton', 'images/menubutton.png');
-    game.load.image('boost', 'images/boost.png');
-    game.load.image('invisibleTile', 'images/invisibleTile.png')
-    game.load.spritesheet('spike', 'images/spikes.png', 20, 20);
-    game.load.spritesheet('pizza', 'images/pizza.png', 35, 30);
-    game.load.spritesheet('button', 'images/button.png', 20, 20);
-    game.load.spritesheet('portal', 'images/portalsheet2.png', 32, 32, 4);
-    game.load.bitmapFont('font', 'nokia16.png', 'nokia16.xml');
-    game.load.text('map', 'lvl_structure/map.txt');
-
-}
 
 function create() {
 
@@ -147,7 +116,6 @@ function create() {
     function createBoost(x, y) {
         boost = game.add.sprite(x, y-10, 'boost');
         boosters.add(boost);
-        boost.hitArea
     }
 
     function createSpike(x, y, width, height, u) {
@@ -243,7 +211,7 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
 
-    checkAchievement("New game");
+    checkAchievement("New Game");
 
 }
 
@@ -258,44 +226,39 @@ function update() {
     game.physics.arcade.overlap(player, buttons, buttonPressed, null, this);
     game.physics.arcade.overlap(player, portals, teleport, null, this);
 
-    //check if has pressed every button
-    if(buttonCount == 3){
-        checkAchievement("Expert Buttoneer");
-    }
-
     //collected all the balls
     if(ballCount == ballsAmount) {
         checkAchievement("Ball Lover");
     }
 
     //all the secrets
-    if(unlocked["Secret1"] && unlocked["Secret2"] && unlocked["Secret3"] && unlocked["Secret4"]){
-        checkAchievement("Secretive");
+    if(unlocked["how did u find dis?!?!"] && unlocked["Not this way"] && unlocked["Whew!"] && unlocked["Are You Blind?"]){
+        checkAchievement("all the salars");
     }
 
     //track mouse clicking
-    var x = game.input.activePointer.positionDown.x
-    var y = game.input.activePointer.positionDown.y
+    var x = game.input.activePointer.positionDown.x;
+    var y = game.input.activePointer.positionDown.y;
 
     var area = new Phaser.Rectangle(1, 1, 39*20, 39*20);
 
     if (area.contains(x, y)) {
-        checkAchievement("Click");
+        checkAchievement("Clicking won't help");
     }
 
     //check secret coordinates
     if(player.body.y > (38*20)) {
-        checkAchievement("Secret1");
+        checkAchievement("how did u find dis?!?!");
     }
     if(player.body.x == 0) {
         if(player.body.y < 20*20) {
-            checkAchievement("Secret2");
+            checkAchievement("Not this way");
         } else {
-            checkAchievement("Secret3");
+            checkAchievement("Whew!");
         }
     }
     if (player.body.x > 38*20) {
-        checkAchievement("Secret4");
+        checkAchievement("Are You Blind?");
     }
 
     //moving platforms
@@ -338,11 +301,11 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.body.velocity.y = -400;
         jump.play();
-        checkAchievement("Too damn high");
+        checkAchievement("Jump Like a Sissy");
     }
 
     if (cursors.down.isDown) {
-        checkAchievement("U dont need that");
+        checkAchievement("Down Syndrome");
     }
 
     this.game.input.keyboard.onDownCallback = function(e) {
@@ -427,7 +390,7 @@ function achievementUnlocked(achievement) {
     if(i == achievements.length - 1) achievementUnlocked("Gotta get em all");
 }
 
-function collectBall(ball) {
+function collectBall(player, ball) {
     checkAchievement("Your First Ball!");
     sball.play();
     ballCount++;
@@ -435,57 +398,54 @@ function collectBall(ball) {
 }
 
 function boostPlayer(player) {
-    checkAchievement("Bojoing");
+    checkAchievement("High as a Kite");
     booster.play();
     player.body.velocity.y = -500;
 }
 
 function killPlayer(player) {
-    checkAchievement("U ded");
+    checkAchievement("avoid spikes dummy");
     deathCount++;
     death.play();
     player.kill();
     player.reset(playerCoords[0], playerCoords[1]);
-    if(deathCount == 50) checkAchievement("50deaths");
+    if(deathCount == 10) checkAchievement("JEsus the spikes man");
+    if(deathCount == 50) checkAchievement("wow you really suck");
 }
 
 function buttonPressed(player, button) {
-    checkAchievement("Boop");
     if(button.frame == 0)sbutton.play();
     button.frame = 1;
-
     if (button.body.x == 660) {
-        if(button1pressed == false) {
+        if(!buttonsPressed[0]) {
+            achievementUnlocked("Mission Impossible");
             appear.play();
             blocks = game.add.tileSprite(36*20, 9*20, 3*20, 20, 'block');
-            platforms.add(blocks)
+            platforms.add(blocks);
             blocks.alpha = 0;
             tween = game.add.tween(blocks).to({alpha: 1}, 1000, null, true, 0).start();
-
-            buttonCount++;
-            button1pressed = true;
+            buttonsPressed[0] = true;
         }
     }
     else if (button.body.x == 140) {
-        if(button2pressed == false) {
+        if(!buttonsPressed[1]) {
+            achievementUnlocked("Open Sesame");
             disappear.play();
             ePlat.kill();
             blocks = game.add.tileSprite(31*20, 27*20, 8*20, 20, 'block');
             game.add.tween(blocks).to({alpha: 0}, 1000, null, true, 0).start();
-
-            buttonCount++;
-            button2pressed = true;
+            buttonsPressed[1] = true;
         }
     }
     else if (button.body.x == 760) {
-        if(button3pressed == false) {
+        if(!buttonsPressed[2]) {
+            achievementUnlocked("Expert Buttoneer");
             appear.play();
             blocks = game.add.tileSprite(7*20, 6*20, 20, 20, 'block');
-            platforms.add(blocks)
+            platforms.add(blocks);
             blocks.alpha = 0;
             tween = game.add.tween(blocks).to({alpha: 1}, 1000, null, true, 0).start();
-            buttonCount++;
-            button3pressed = true;
+            buttonsPressed[2] = true;
         }
 
     }
@@ -494,14 +454,16 @@ function buttonPressed(player, button) {
 }
 
 function teleport(player, portal) {
-    checkAchievement("Zoop");
     if (portal.body.y == 37*20+5) {
+        checkAchievement("Useless");
         steleport.play();
         player.reset(1*20, 22*20);
     } else if (portal.body.y == 20*20+5) {
+        checkAchievement("Bro, It's a Prank!!");
         steleport.play();
         killPlayer(player);
     } else if (portal.body.y == 1*20+5) {
+        checkAchievement("No Way Out");
         steleport.play();
         player.reset(2*20, 10*20);
 
