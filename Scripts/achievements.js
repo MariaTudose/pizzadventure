@@ -12,8 +12,9 @@ var achiInfos = ["Start a new game", "Move left", "Move right", "Jump", "Press d
 var infolist = {};
 var unlocked = {};
 var achilist = {};
-var i = 0;
+var x = 0;
 var aboxes = [];
+var gameFinished = false;
 
 
 function setupAchievements(game) {
@@ -70,6 +71,9 @@ function achievementUnlocked(achievement) {
     }
     this.game.add.tween(text).to({alpha: 0}, 1000, null, true, 2500).start();
     this.game.add.tween(box).to({alpha: 0}, 1000, null, true, 2500).start();
-    i++;
-    if (i == achievements.length - 1) achievementUnlocked("GOTTA GET EM ALL");
+    x++;
+    if (x == achievements.length - 1) {
+        achievementUnlocked("GOTTA GET EM ALL");
+        gameFinished = true;
+    } 
 }

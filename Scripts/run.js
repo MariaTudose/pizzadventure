@@ -23,6 +23,7 @@ function create() {
     steleport = game.add.audio('teleport');
     appear = game.add.audio('appear');
     disappear = game.add.audio('disappear');
+    sending = game.add.audio('sending');
 
 
     //GROUPS FOR ALL GAME OBJECTS:

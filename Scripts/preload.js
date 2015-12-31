@@ -1,6 +1,8 @@
 function preload() {
 
     game.load.image('logo', 'images/logo3.png');
+    game.load.image('ending', 'images/ending.png');
+    game.load.image('newgamebutton', 'images/newgamebutton.png');
     game.load.audio('music', ['audio/music.ogg']);
     game.load.audio('achimusic', ['audio/achi.wav']);
     game.load.audio('jump', ['audio/jump.ogg']);
@@ -12,6 +14,7 @@ function preload() {
     game.load.audio('teleport', ['audio/teleport.ogg']);
     game.load.audio('disappear', ['audio/dissappear.ogg']);
     game.load.audio('appear', ['audio/appear.ogg']);
+    game.load.audio('sending', ['audio/meneevaaparemmaks.wav']);
     game.load.image('block', 'images/block.png');
     game.load.image('mblock', 'images/mblock.png');
     game.load.image('achi', 'images/achi.png');
