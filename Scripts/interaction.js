@@ -8,6 +8,7 @@ function collectBall(player, ball) {
     sball.play();
     ballCount++;
     ball.kill();
+    //gameFinished = true;
 }
 
 function boostPlayer(player) {

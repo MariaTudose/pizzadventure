@@ -56,3 +56,23 @@ function info() {
         text.destroy();
     }, self);
 }
+
+function newGame() {
+        gameFinished = false;
+        if(!music.paused) {
+            music.pause();
+        }
+        //game.paused = false;
+        ending = game.add.sprite(0, 0, 'ending');
+        sending.play();
+        gameFinishedBefore = true;
+        ballCount = 0;
+        buttonsPressed = [false,false,false];
+        deathCount = 0;
+        infolist = {};
+        unlocked = {};
+        achilist = {};
+        x = 0;
+        aboxes = [];
+        newgame = game.add.button(451, 411, 'newgamebutton', create, this, 2, 1, 0);
+}

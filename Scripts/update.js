@@ -1,4 +1,3 @@
-
 function update() {
     game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(balls, platforms);
@@ -10,12 +9,7 @@ function update() {
 
     //check whether the game is finished
     if(gameFinished == true) {
-        gameFinished = false;
-        if(!music.paused) music.pause();
-        var ending = game.add.sprite(0, 0, 'ending');
-        sending.play();
-        game.add.button(451, 411, 'newgamebutton', create, this, 2, 1, 0);
-        //pause();
+        newGame();
     }
 
     //collected all the balls

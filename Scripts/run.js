@@ -6,7 +6,18 @@ var height = 800;
 
 var playerCoords;
 
+var gameFinishedBefore = false;
+
+var ending;
+var newgame;
+
 function create() {
+
+    if(gameFinishedBefore) {
+        sending.pause();
+        ending.kill();
+        newgame.kill();
+    };
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.stage.backgroundColor = '#E8D5B7';
