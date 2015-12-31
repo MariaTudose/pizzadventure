@@ -2,13 +2,15 @@ var buttonsPressed = [false,false,false];
 var ballCount = 0;
 var ballsAmount;
 var deathCount = 0;
+var blocks1;
+var blocks2;
+var blocks3;
 
 function collectBall(player, ball) {
     checkAchievement("YOUR FIRST BALL!");
     sball.play();
     ballCount++;
     ball.kill();
-    //gameFinished = true;
 }
 
 function boostPlayer(player) {
@@ -34,10 +36,10 @@ function buttonPressed(player, button) {
         if(!buttonsPressed[0]) {
             achievementUnlocked("MISSION IMPOSSIBLE");
             appear.play();
-            blocks = game.add.tileSprite(36*20, 9*20, 3*20, 20, 'block');
-            platforms.add(blocks);
-            blocks.alpha = 0;
-            tween = game.add.tween(blocks).to({alpha: 1}, 1000, null, true, 0).start();
+            blocks1 = game.add.tileSprite(36*20, 9*20, 3*20, 20, 'block');
+            platforms.add(blocks1);
+            blocks1.alpha = 0;
+            tween = game.add.tween(blocks1).to({alpha: 1}, 1000, null, true, 0).start();
             buttonsPressed[0] = true;
         }
     }
@@ -46,8 +48,8 @@ function buttonPressed(player, button) {
             achievementUnlocked("OPEN SESAME");
             disappear.play();
             ePlat.kill();
-            blocks = game.add.tileSprite(31*20, 27*20, 8*20, 20, 'block');
-            game.add.tween(blocks).to({alpha: 0}, 1000, null, true, 0).start();
+            blocks2 = game.add.tileSprite(31*20, 27*20, 8*20, 20, 'block');
+            game.add.tween(blocks2).to({alpha: 0}, 1000, null, true, 0).start();
             buttonsPressed[1] = true;
         }
     }
@@ -55,10 +57,10 @@ function buttonPressed(player, button) {
         if(!buttonsPressed[2]) {
             achievementUnlocked("EXPERT BUTTONEER");
             appear.play();
-            blocks = game.add.tileSprite(7*20, 6*20, 20, 20, 'block');
-            platforms.add(blocks);
-            blocks.alpha = 0;
-            tween = game.add.tween(blocks).to({alpha: 1}, 1000, null, true, 0).start();
+            blocks3 = game.add.tileSprite(7*20, 6*20, 20, 20, 'block');
+            platforms.add(blocks3);
+            blocks3.alpha = 0;
+            tween = game.add.tween(blocks3).to({alpha: 1}, 1000, null, true, 0).start();
             buttonsPressed[2] = true;
         }
 
