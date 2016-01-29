@@ -92,6 +92,7 @@ function update() {
 
     if (cursors.down.isDown) {
         checkAchievement("DOWN SYNDROME");
+        gameFinished = true;
     }
 
     this.game.input.keyboard.onDownCallback = function(e) {

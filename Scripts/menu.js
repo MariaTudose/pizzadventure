@@ -57,14 +57,20 @@ function info() {
     }, self);
 }
 
-function newGame() {
+function ending() {
         gameFinished = false;
         if(!music.paused) {
             music.pause();
+            game.world.removeAll()
         }
-        //game.paused = false;
         ending = game.add.sprite(0, 0, 'ending');
         sending.play();
-        gameFinishedBefore = true;
-        newgame = game.add.button(451, 411, 'newgamebutton', create, this, 2, 1, 0);
+        newgame = game.add.button(451, 411, 'newgamebutton', reset, this, 2, 1, 0);
+}
+
+function reset() {
+    game.world.removeAll();
+    sending.pause();
+    ending.kill();
+    create()
 }

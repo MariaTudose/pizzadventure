@@ -13,29 +13,7 @@ var newgame;
 
 function create() {
 
-    if(gameFinishedBefore) {
-        //starting values
-        ballCount = 0;
-        buttonsPressed = [false,false,false];
-        deathCount = 0;
-        unlocked = {};
-        x = 0;
-        aboxes = [];
-        achievements.forEach(function (achi) {
-            achilist[achi].alpha = 0.5;
-            infolist[achi].alpha = 0;
-        });
 
-        //killing button blocks
-        blocks1.kill();
-        blocks2.kill();
-        blocks3.kill();
-
-        //ending the ending
-        sending.pause();
-        ending.kill();
-        newgame.kill();
-    };
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.stage.backgroundColor = '#E8D5B7';
